@@ -85,6 +85,7 @@ export default {
           item.checked = _this.checkAllFlag
         }
       })
+      this.calcTotalPrice()
     },
     calcTotalPrice () {
       let _this = this
