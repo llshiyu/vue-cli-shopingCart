@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <!--<img src="./assets/logo.png">-->
     <router-view/>
   </div>
 </template>
@@ -19,5 +19,37 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+table {
+  width: 80%;
+  margin: 20px auto;
+}
+
+table th {
+  border-bottom: 1px solid #ccc;
+  padding: 10px;
+}
+
+table td {
+  padding: 10px;
+}
+
+thead tr {
+  background: #000000;
+  color: #fff;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.table-footer {
+  background: #f4f4f4;
+  text-align: right;
 }
 </style>
