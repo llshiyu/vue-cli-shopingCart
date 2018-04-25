@@ -23,8 +23,9 @@
       :index="index"
       :key="index"
       @deleteShop="handleDetele"
+      @calcTotalMoney="calcTotalPrice"
       ></Tbody>
-      <Tfooter v-show="shopList.length" :checkAllFlag="checkAllFlag" @checkedAll="selectAll"></Tfooter>
+      <Tfooter v-show="shopList.length" :totalMoney="totalMoney" :checkAllFlag="checkAllFlag" @checkedAll="selectAll"></Tfooter>
     </table>
   </div>
 </template>
@@ -44,6 +45,7 @@ export default {
       shopNum: '',
       shopPrice: '',
       checkAllFlag: false,
+      totalMoney: 0,
       shopList: [
         {
           title: '商品名',
@@ -65,12 +67,13 @@ export default {
       this.shopTitle = ''
       this.shopNum = ''
       this.shopPrice = ''
+      this.calcTotalPrice()
     },
     handleDetele (index) {
       this.shopList.splice(index, 1)
     },
     init () {
-      console.log('一进页面就加载的函数，输出shopList', this.shopList)
+      // console.log('一进页面就加载的函数，输出shopList', this.shopList)
     },
     selectAll (isCheck) {
       this.checkAllFlag = isCheck
@@ -80,6 +83,15 @@ export default {
           _this.$set(item, 'checked', _this.checkAllFlag)
         } else {
           item.checked = _this.checkAllFlag
+        }
+      })
+    },
+    calcTotalPrice () {
+      let _this = this
+      this.totalMoney = 0
+      this.shopList.forEach(function (item, index) {
+        if (item.checked) {
+          _this.totalMoney += item.price * item.num
         }
       })
     }

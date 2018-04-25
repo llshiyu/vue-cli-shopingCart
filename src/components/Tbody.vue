@@ -44,6 +44,7 @@ export default {
           product.num = 1
         }
       }
+      this.$emit('calcTotalMoney')
     },
     selectProduct (item) {
       if (typeof item.checked === 'undefined') {
@@ -51,6 +52,7 @@ export default {
       } else {
         item.checked = !item.checked
       }
+      this.$emit('calcTotalMoney')
     }
   }
 }
