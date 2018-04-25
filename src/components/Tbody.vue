@@ -1,9 +1,17 @@
 <template>
   <tbody>
   <tr>
-    <td class="text-left"><input type="checkbox"></td>
+    <td class="text-left" :class="{'checked':content.checked}">
+      <input type="checkbox" :checked="content.checked" @click="selectProduct(content)">
+    </td>
     <td>{{content.title}}</td>
-    <td>{{content.num}}</td>
+    <td>{{content.price | money}}</td>
+    <td>
+      <span class="input-a" @click="changeMoney(content, -1)">-</span>
+      <input type="number" v-model="content.num" class="number-input"/>
+      <span class="input-a" @click="changeMoney(content, 1)">+</span>
+    </td>
+    <td>{{content.price * content.num | money('元')}}</td>
     <td @click="handleDelete"><a href="javascript:;">删除</a></td>
   </tr>
   </tbody>
@@ -16,15 +24,52 @@ export default {
   data () {
     return {}
   },
+  filters: {
+    money (value, type) {
+      value = value * 1
+      return type ? (value.toFixed(2) + type) : ('￥' + value.toFixed(2))
+    }
+  },
   // 在 `methods` 对象中定义方法
   methods: {
     handleDelete () {
       this.$emit('deleteShop', this.index)
+    },
+    changeMoney (product, way) {
+      if (way > 0) {
+        product.num++
+      } else {
+        product.num--
+        if (product.num < 1) {
+          product.num = 1
+        }
+      }
+    },
+    selectProduct (item) {
+      if (typeof item.checked === 'undefined') {
+        this.$set(item, 'checked', true)
+      } else {
+        item.checked = !item.checked
+      }
     }
   }
 }
 </script>
 
 <style scoped>
+  .number-input {
+    width: 40px;
+    text-align: center;
+    margin: 0 10px;
+  }
 
+  .input-a {
+    text-decoration: none;
+    color: #666;
+    cursor: pointer;
+  }
+
+  .input-a:hover {
+    color: #ff0000;
+  }
 </style>
