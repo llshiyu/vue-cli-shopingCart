@@ -52,4 +52,28 @@ thead tr {
   background: #f4f4f4;
   text-align: right;
 }
+
+.fl{
+  float: left;
+}
+
+.fr{
+  float: right;
+}
+
+.clearfix{
+  clear:both;
+}
+
+.clearfix:after{
+  display:table;
+  content:"";
+  clear:both;
+}
+
+.clearfix:before{
+  display:table;
+  content:"";
+}
+
 </style>

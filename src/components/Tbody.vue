@@ -24,6 +24,9 @@ export default {
   data () {
     return {}
   },
+  components: {
+
+  },
   filters: {
     money (value, type) {
       value = value * 1
