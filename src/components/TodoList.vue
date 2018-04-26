@@ -24,6 +24,7 @@
       :key="index"
       @deleteShop="handleDetele"
       @calcTotalMoney="calcTotalPrice"
+      @isSelectAll="isSelectAll"
       ></Tbody>
       <Tfooter v-show="shopList.length" :totalMoney="totalMoney" :checkAllFlag="checkAllFlag" @checkedAll="selectAll"></Tfooter>
     </table>
@@ -68,6 +69,7 @@ export default {
       this.shopNum = ''
       this.shopPrice = ''
       this.calcTotalPrice()
+      this.isSelectAll()
     },
     handleDetele (index) {
       this.shopList.splice(index, 1)
@@ -95,6 +97,20 @@ export default {
           _this.totalMoney += item.price * item.num
         }
       })
+    },
+    isSelectAll () {
+      let listLength = this.shopList.length
+      let checkNumber = 0
+      this.shopList.forEach(function (item, index) {
+        if (item.checked) {
+          checkNumber++
+        }
+      })
+      if (checkNumber === listLength) {
+        this.checkAllFlag = true
+      } else {
+        this.checkAllFlag = false
+      }
     }
   },
   mounted () {

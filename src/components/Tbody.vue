@@ -53,6 +53,7 @@ export default {
         item.checked = !item.checked
       }
       this.$emit('calcTotalMoney')
+      this.$emit('isSelectAll')
     }
   }
 }
