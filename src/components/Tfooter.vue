@@ -5,7 +5,8 @@
     </td>
     <td colspan="5">
       <span>总价：{{totalMoney | money}}</span>
-      <button>立即购买</button>
+      <router-link to="/Order/name1">立即购买</router-link>
+      <!--<button>立即购买</button>-->
     </td>
   </tr>
 </template>

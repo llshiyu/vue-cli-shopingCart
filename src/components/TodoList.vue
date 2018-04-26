@@ -34,6 +34,7 @@
 <script>
 import Tbody from './Tbody'
 import Tfooter from './Tfooter'
+import cartData from '../data/cartData.json'
 export default {
   props: [],
   name: 'TodoList',
@@ -47,13 +48,7 @@ export default {
       shopPrice: '',
       checkAllFlag: false,
       totalMoney: 0,
-      shopList: [
-        {
-          title: '商品名',
-          num: 20,
-          price: 11
-        }
-      ]
+      shopList: []
     }
   },
   // 在 `methods` 对象中定义方法
@@ -76,6 +71,8 @@ export default {
     },
     init () {
       // console.log('一进页面就加载的函数，输出shopList', this.shopList)
+      this.shopList = cartData.result.list
+      this.totalMoney = cartData.result.totalMoney
     },
     selectAll (isCheck) {
       this.checkAllFlag = isCheck
