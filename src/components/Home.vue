@@ -1,6 +1,7 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <h2>{{author}}</h2>
     <TodoList></TodoList>
   </div>
 </template>
@@ -15,6 +16,11 @@ export default {
   data () {
     return {
       msg: 'Welcome to shoping cart'
+    }
+  },
+  computed: {
+    author () {
+      return this.$store.state.author
     }
   }
 }
