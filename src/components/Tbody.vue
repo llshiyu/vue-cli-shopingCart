@@ -12,7 +12,7 @@
       <span class="input-a" @click="changeMoney(content, 1)">+</span>
     </td>
     <td>{{content.price * content.num | money('元')}}</td>
-    <td @click="handleDelete"><a href="javascript:;">删除</a></td>
+    <td @click="showPop"><a href="javascript:;">删除</a></td>
   </tr>
   </tbody>
 </template>
@@ -57,6 +57,18 @@ export default {
       }
       this.$emit('calcTotalMoney')
       this.$emit('isSelectAll')
+    },
+    showPop () {
+      this.$store.state.showDeleteFlag = true
+      this.$store.state.deleteId = this.index
+    }
+  },
+  computed: {
+    showDeleteFlag () {
+      return this.$store.state.showDeleteFlag
+    },
+    deleteId () {
+      return this.$store.state.deleteId
     }
   }
 }

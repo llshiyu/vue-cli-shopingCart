@@ -3,15 +3,17 @@
     <h1>{{ msg }}</h1>
     <h2>{{author}}</h2>
     <TodoList></TodoList>
+    <PopUps></PopUps>
   </div>
 </template>
 
 <script>
 import TodoList from './TodoList'
+import PopUps from './PopUps'
 export default {
   name: 'Home',
   components: {
-    TodoList
+    TodoList, PopUps
   },
   data () {
     return {

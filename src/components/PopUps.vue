@@ -1,10 +1,10 @@
 <template>
-  <div class="pop-box" v-if="ifShow">
+  <div class="pop-box" v-if="showDeleteFlag">
     <div class="pop">
-      <div class="pop-content">{{popCont}}</div>
+      <div class="pop-content">{{popCont}}{{deleteId}}</div>
       <div class="pop-btn-box clearfix">
         <div class="btn-define fl btn">确定</div>
-        <div class="btn-close fl btn">取消</div>
+        <div class="btn-close fr btn" @click="closePup">取消</div>
       </div>
     </div>
   </div>
@@ -17,6 +17,19 @@
     data () {
       return {
         popCont: '确定要删除弹窗吗？'
+      }
+    },
+    computed: {
+      showDeleteFlag () {
+        return this.$store.state.showDeleteFlag
+      },
+      deleteId () {
+        return this.$store.state.deleteId
+      }
+    },
+    methods: {
+      closePup () {
+        this.$store.state.showDeleteFlag = false
       }
     }
   }
@@ -37,10 +50,19 @@
     left: 0;
     right: 0;
     bottom: 0;
-    width: 200px;
-    height: 400px;
+    width: 400px;
+    height: 200px;
+    margin: auto;
     background: #fff;
     text-align: center;
+  }
+  .pop-content{
+    height: 140px;
+    line-height: 140px;
+  }
+  .pop-btn-box{
+    text-align: center;
+    margin: 0 40px;
   }
   .btn{
     width: 100px;
@@ -49,6 +71,7 @@
     text-align: center;
     background: #2c3e50;
     color: #fff;
+    cursor: pointer;
   }
   .btn-define{
     margin-right: 10px;

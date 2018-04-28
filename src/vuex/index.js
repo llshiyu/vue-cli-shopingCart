@@ -4,7 +4,9 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   // 定义状态
   state: {
-    author: 'vuex variable 全局变量'
+    author: 'vuex variable 全局变量',
+    showDeleteFlag: false,
+    deleteId: ''
   }
 })
 export default store
