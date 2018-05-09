@@ -17,6 +17,9 @@
         <th width="100">操作</th>
       </tr>
       </thead>
+      <tbody>
+
+      </tbody>
       <Tbody
       v-for="(item, index) of shopList"
       :content="item"

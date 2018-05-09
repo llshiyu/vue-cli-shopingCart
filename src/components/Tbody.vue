@@ -1,5 +1,5 @@
 <template>
-  <tbody>
+  <!--<tbody>-->
   <tr>
     <td class="text-left" :class="{'checked':content.checked}">
       <input type="checkbox" :checked="content.checked" @click="selectProduct(content)">
@@ -14,7 +14,7 @@
     <td>{{content.price * content.num | money('元')}}</td>
     <td @click="showPop"><a href="javascript:;">删除</a></td>
   </tr>
-  </tbody>
+  <!--</tbody>-->
 </template>
 
 <script>
