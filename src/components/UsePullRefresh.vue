@@ -1,15 +1,15 @@
 <template>
   <div>
     <!--https://blog.csdn.net/qq_16559905/article/details/70160807-->
-    <v-scroll :on-refresh="onRefresh" :on-infinite="onInfinite" :dataList="scrollData">
+    <Vscroll :on-refresh="onRefresh" :on-infinite="onInfinite" :dataList="scrollData">
       <ul>
         <li v-for="(item,index) in listdata">{{item.name}}</li>
         <li v-for="(item,index) in downdata">{{item.name}}</li>
       </ul>
-    </v-scroll>
+    </Vscroll>
   </div>
 </template>
-<style lang="less">
+<style >
   ul li {
     min-height: 100px;
     line-height: 100px;
@@ -17,13 +17,15 @@
     border: 1px solid red;
   }
 </style>
+
 <script>
+  import Vscroll from './RefreshPage/RefreshPage'
   export default {
+    name: 'UsePullRefresh',
     components: {
-      'v-scroll': require("./RefreshPage/RefreshPage")
+      Vscroll
     },
     data() {
-
       return {
         counter: 1, //当前页
         num: 10, // 一页显示多少条
@@ -31,18 +33,20 @@
         pageEnd: 0, // 结束页数
         listdata: [], // 下拉更新数据存放数组
         downdata: [], // 上拉更多的数据存放数组
-        scrollData:{
+        scrollData: {
           noFlag: false //暂无更多数据显示
         }
       }
     },
-    mounted: function() {
-      this.getList();
+    mounted () {
+      this.$nextTick(()=>{
+        this.getList();
+      })
     },
     methods: {
       getList() {
         var response = []
-        for(let i = 0; i < 60; i++) {
+        for (let i = 0; i < 60; i++) {
           response.push({
             name: i
           })
@@ -61,8 +65,8 @@
         let i = this.pageStart = this.pageEnd - this.num;
 
         let more = this.$el.querySelector('.load-more')
-        for(i; i < end; i++) {
-          if(i >= 30) {
+        for (i; i < end; i++) {
+          if (i >= 30) {
             more.style.display = 'none'; //隐藏加载条
 
             //走完数据调用方法
@@ -80,6 +84,5 @@
         done();
       }
     }
-
   }
 </script>

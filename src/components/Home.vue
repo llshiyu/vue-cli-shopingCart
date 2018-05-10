@@ -4,6 +4,7 @@
     <h2>{{author}}</h2>
     <TodoList></TodoList>
     <PopUps></PopUps>
+    <router-link to="/UsePullRefresh">go</router-link>
   </div>
 </template>
 
