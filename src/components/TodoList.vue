@@ -32,7 +32,7 @@
       <Tfooter v-show="shopList.length" :totalMoney="totalMoney" :checkAllFlag="checkAllFlag" @checkedAll="selectAll"></Tfooter>
     </table>
     <!--<Paging :maxPage="9" :initDisplay="3" :currentDisplay="1" :selectIndex="1" @clickChangePage="clickChangePage"></Paging>-->
-    <MyPaging></MyPaging>
+    <MyPaging :totalNumber="100" :totalPages="10" :showMaxPages="4" :selectShowNumberList="[10, 20, 30]"></MyPaging>
   </div>
 </template>
 
