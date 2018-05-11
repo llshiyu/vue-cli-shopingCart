@@ -11,28 +11,28 @@
 </template>
 
 <script>
-  export default {
-    props: ['ifShow'],
-    name: 'PopUps',
-    data () {
-      return {
-        popCont: '确定要删除弹窗吗？'
-      }
+export default {
+  props: ['ifShow'],
+  name: 'PopUps',
+  data () {
+    return {
+      popCont: '确定要删除弹窗吗？'
+    }
+  },
+  computed: {
+    showDeleteFlag () {
+      return this.$store.state.showDeleteFlag
     },
-    computed: {
-      showDeleteFlag () {
-        return this.$store.state.showDeleteFlag
-      },
-      deleteId () {
-        return this.$store.state.deleteId
-      }
-    },
-    methods: {
-      closePup () {
-        this.$store.state.showDeleteFlag = false
-      }
+    deleteId () {
+      return this.$store.state.deleteId
+    }
+  },
+  methods: {
+    closePup () {
+      this.$store.state.showDeleteFlag = false
     }
   }
+}
 </script>
 
 <style scoped>

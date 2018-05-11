@@ -1,0 +1,51 @@
+.page-bar-container {
+  width: 100%;
+  position: relative;
+  padding: 10px 0;
+  color: #7f7f7f;
+}
+
+.page-bar-ul {
+
+}
+
+.page-bar-li {
+  margin: 0 3px;
+}
+
+.base-paging {
+  text-align: center;
+  border: 1px solid #e6e6e6;
+  padding: 0 10px;
+  height: 26px;
+  line-height: 26px;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.paging {
+
+}
+
+.select-page {
+  background-color: #54ceed;
+  color: #fff;
+}
+
+.base-next-page {
+
+}
+
+.before-page {
+
+}
+
+.jump-input {
+  width: 30px;
+  height: 26px;
+  text-align: center;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+  margin-right:2px;
+}
+

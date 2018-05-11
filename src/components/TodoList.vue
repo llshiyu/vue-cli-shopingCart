@@ -31,18 +31,22 @@
       ></Tbody>
       <Tfooter v-show="shopList.length" :totalMoney="totalMoney" :checkAllFlag="checkAllFlag" @checkedAll="selectAll"></Tfooter>
     </table>
+    <!--<Paging :maxPage="9" :initDisplay="3" :currentDisplay="1" :selectIndex="1" @clickChangePage="clickChangePage"></Paging>-->
+    <MyPaging></MyPaging>
   </div>
 </template>
 
 <script>
 import Tbody from './Tbody'
 import Tfooter from './Tfooter'
+// import Paging from './Paging'
+import MyPaging from './MyPaging'
 import cartData from '../data/cartData.json'
 export default {
   props: [],
   name: 'TodoList',
   components: {
-    Tbody, Tfooter
+    Tbody, Tfooter, MyPaging
   },
   data () {
     return {

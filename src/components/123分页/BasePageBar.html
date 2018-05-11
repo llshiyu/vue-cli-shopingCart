@@ -1,0 +1,25 @@
+<div class="page-bar-container flex-center">
+  <ul class="page-bar-ul flex-center">
+    <li class="page-bar-li home-page text_blue pointer" @click="goTag(1)">{{$t('basePageBar.index')}}</li>
+    <li class="page-bar-li base-paging before-page base-next-page pointer" @click="clickToGoBefore"><<</li>
+    <template v-for="(item,index) in computedTabArr">
+      <li class="page-bar-li base-paging paging pointer"
+          :class="{'select-page':item == selectIndex}"
+          v-if="item!==-1"
+          @click="clickTag(item)"
+          :key="index"
+      >
+        {{item}}
+      </li>
+      <li v-if="item===-1" class="page-bar-li base-paging paging pointer" :key="index">
+        ...
+      </li>
+    </template>
+    <li class="page-bar-li base-paging after-page base-next-page pointer" @click="clickToGoAfter">>></li>
+
+    <li class="page-bar-li jump">
+      <input type="text" class="jump-input" v-model="inputTag">
+      <span class="jump-button text_blue pointer" @click="clickGo">Go</span>
+    </li>
+  </ul>
+</div>
