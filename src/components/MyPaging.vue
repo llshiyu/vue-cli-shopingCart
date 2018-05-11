@@ -37,10 +37,10 @@ export default {
       type: Number,
       default: 1
     }, // 总条数
-    totalPages: {
+    selectShowNumber: {
       type: Number,
-      default: 1
-    }, // 总页数
+      default: 10
+    }, // 每页展示多少条数据 默认一页展示10条,select框的value值
     showMaxPages: {
       type: Number,
       default: 1
@@ -52,11 +52,17 @@ export default {
   data () {
     return {
       // selectShowNumberList: [10, 20, 30, 40], // 选择一页展示多少条
-      selectShowNumber: 10, // 默认一页展示10条,select框的value值
+      totalPages: 1, // 总页数
+      // selectShowNumber: 10, // 默认一页展示10条,select框的value值
       showActiveIndex: 1, // 页码样式index
       thisPage: 1, // 当前选中页数
       inputVal: 1 // 输入框指定去第几页
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.calculateTotalPage()
+    })
   },
   computed: {
 
@@ -64,11 +70,14 @@ export default {
   methods: {
     calculateTotalPage () { // 计算总页数
       this.totalPages = parseInt(this.totalNumber / this.selectShowNumber)
+      // console.log(this.totalPages)
+      this.clickPage(1)
     },
     clickPage (index) {
       this.showActiveIndex = index * 1
       this.thisPage = index * 1
       this.inputVal = index * 1
+      this.$emit('callBack', this.thisPage, this.selectShowNumber)
     },
     checkPage (index) {
       if (index < 1) {

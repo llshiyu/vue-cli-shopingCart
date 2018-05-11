@@ -32,7 +32,7 @@
       <Tfooter v-show="shopList.length" :totalMoney="totalMoney" :checkAllFlag="checkAllFlag" @checkedAll="selectAll"></Tfooter>
     </table>
     <!--<Paging :maxPage="9" :initDisplay="3" :currentDisplay="1" :selectIndex="1" @clickChangePage="clickChangePage"></Paging>-->
-    <MyPaging :totalNumber="100" :totalPages="10" :showMaxPages="4" :selectShowNumberList="[10, 20, 30]"></MyPaging>
+    <MyPaging :totalNumber="maxTotalNumber" :selectShowNumber="pageShowTotal" :showMaxPages="4" :selectShowNumberList="[pageShowTotal, pageShowTotal+3, pageShowTotal+6]" @callBack="showPage"></MyPaging>
   </div>
 </template>
 
@@ -55,7 +55,9 @@ export default {
       shopPrice: '',
       checkAllFlag: false,
       totalMoney: 0,
-      shopList: []
+      shopList: [],
+      maxTotalNumber: 100,
+      pageShowTotal: 3 // 每页展示多少数据
     }
   },
   // 在 `methods` 对象中定义方法
@@ -78,8 +80,9 @@ export default {
     },
     init () {
       // console.log('一进页面就加载的函数，输出shopList', this.shopList)
-      this.shopList = cartData.result.list
+      this.maxTotalNumber = cartData.result.list.length
       this.totalMoney = cartData.result.totalMoney
+      this.showPage(1, this.pageShowTotal)
     },
     selectAll (isCheck) {
       this.checkAllFlag = isCheck
@@ -115,12 +118,36 @@ export default {
       } else {
         this.checkAllFlag = false
       }
+    },
+    showPage (thisPage, thisPageNumber) {
+      // console.log('thisPage: ', thisPage) // 当前第几页
+      // console.log('thisPageNumber: ', thisPageNumber) // 每页展示几条数据
+      let startIndex = this.checkPageNumber(1 + thisPageNumber * (thisPage - 1) ) - 1
+      let endIndex = this.checkPageNumber(thisPageNumber * thisPage)
+      // console.log('startIndex', startIndex)
+      // console.log('endIndex', endIndex)
+      this.shopList = []
+      this.shopList = cartData.result.list.slice(startIndex, endIndex)
+    },
+    checkPageNumber (index) {
+      // console.log('index', index)
+      // console.log('this.maxTotalNumber ', this.maxTotalNumber)
+      if (index < 1) {
+        index = 1
+      }
+      if (index > this.maxTotalNumber) {
+        index = this.maxTotalNumber
+      }
+      return index
     }
   },
   mounted () {
     this.$nextTick(function () {
       this.init()
     })
+  },
+  created () { // 创建完毕状态
+    this.init()
   }
 }
 </script>
