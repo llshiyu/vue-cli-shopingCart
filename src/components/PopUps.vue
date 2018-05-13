@@ -3,8 +3,8 @@
     <div class="pop">
       <div class="pop-content">{{popCont}}{{deleteId}}</div>
       <div class="pop-btn-box clearfix">
-        <div class="btn-define fl btn">确定</div>
-        <div class="btn-close fr btn" @click="closePup">取消</div>
+        <div class="btn-define fl btn" @click="delShop()">确定</div>
+        <div class="btn-close fr btn" @click="closePup()">取消</div>
       </div>
     </div>
   </div>
@@ -16,7 +16,7 @@ export default {
   name: 'PopUps',
   data () {
     return {
-      popCont: '确定要删除弹窗吗？'
+      popCont: '确定要删除该商品吗？'
     }
   },
   computed: {
@@ -30,6 +30,9 @@ export default {
   methods: {
     closePup () {
       this.$store.state.showDeleteFlag = false
+    },
+    delShop () {
+      this.$emit('delShop')
     }
   }
 }

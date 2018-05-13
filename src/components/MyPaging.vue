@@ -54,7 +54,7 @@ export default {
   data () {
     return {
       // selectShowNumberList: [10, 20, 30, 40], // 选择一页展示多少条
-      totalPages: 1, //
+      // totalPages: 1, //
       selectShowNumber: 10, // 默认一页展示10条,select框的value值
       // selectShowNumber: 10, // 默认一页展示10条,select框的value值
       showActiveIndex: 1, // 页码样式index
@@ -70,10 +70,13 @@ export default {
     })
   },
   computed: {
+    totalPages () {
+      return parseInt(this.totalNumber / this.selectShowNumber)
+    }
   },
   methods: {
     calculateTotalPage () { // 计算总页数
-      this.totalPages = parseInt(this.totalNumber / this.selectShowNumber)
+      // this.totalPages = parseInt(this.totalNumber / this.selectShowNumber)
       this.clickPage(1)
     },
     clickPage (index) {

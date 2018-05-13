@@ -31,14 +31,16 @@
       ></Tbody>
       <Tfooter v-show="shopList.length" :totalMoney="totalMoney" :checkAllFlag="checkAllFlag" @checkedAll="selectAll"></Tfooter>
     </table>
+    <PopUps @delShop="clickDelShop"></PopUps>
     <!--<Paging :maxPage="9" :initDisplay="3" :currentDisplay="1" :selectIndex="1" @clickChangePage="clickChangePage"></Paging>-->
-    <MyPaging :totalNumber="maxTotalNumber" :selectShowNumber="pageShowTotal" :showMaxPages="4" :selectShowNumberList="[pageShowTotal, pageShowTotal+3, pageShowTotal+6]" @callBack="showPage"></MyPaging>
+    <MyPaging :totalNumber="maxTotalNumber" :pageShowTotal="pageShowTotal" :showMaxPages="4" :selectShowNumberList="[pageShowTotal, pageShowTotal+3, pageShowTotal+6]" @callBack="showPage"></MyPaging>
   </div>
 </template>
 
 <script>
 import Tbody from './Tbody'
 import Tfooter from './Tfooter'
+import PopUps from './PopUps'
 // import Paging from './Paging'
 import MyPaging from './MyPaging'
 import cartData from '../data/cartData.json'
@@ -46,7 +48,7 @@ export default {
   props: [],
   name: 'TodoList',
   components: {
-    Tbody, Tfooter, MyPaging
+    Tbody, Tfooter, MyPaging, PopUps
   },
   data () {
     return {
@@ -57,6 +59,7 @@ export default {
       totalMoney: 0,
       shopList: [],
       maxTotalNumber: 100,
+      thisPage: 1, // 当前第几页
       pageShowTotal: 3 // 每页展示多少数据
     }
   },
@@ -80,9 +83,10 @@ export default {
     },
     init () {
       // console.log('一进页面就加载的函数，输出shopList', this.shopList)
-      this.maxTotalNumber = cartData.result.list.length
-      this.totalMoney = cartData.result.totalMoney
-      this.showPage(1, this.pageShowTotal)
+      this.cartData = cartData
+      this.maxTotalNumber = this.cartData.result.list.length
+      this.totalMoney = this.cartData.result.totalMoney
+      this.showPage(this.thisPage, this.pageShowTotal)
     },
     selectAll (isCheck) {
       this.checkAllFlag = isCheck
@@ -120,18 +124,13 @@ export default {
       }
     },
     showPage (thisPage, thisPageNumber) {
-      // console.log('thisPage: ', thisPage) // 当前第几页
-      // console.log('thisPageNumber: ', thisPageNumber) // 每页展示几条数据
-      let startIndex = this.checkPageNumber(1 + thisPageNumber * (thisPage - 1) ) - 1
+      this.thisPage = thisPage
+      let startIndex = this.checkPageNumber(1 + thisPageNumber * (thisPage - 1)) - 1
       let endIndex = this.checkPageNumber(thisPageNumber * thisPage)
-      // console.log('startIndex', startIndex)
-      // console.log('endIndex', endIndex)
       this.shopList = []
-      this.shopList = cartData.result.list.slice(startIndex, endIndex)
+      this.shopList = this.cartData.result.list.slice(startIndex, endIndex)
     },
     checkPageNumber (index) {
-      // console.log('index', index)
-      // console.log('this.maxTotalNumber ', this.maxTotalNumber)
       if (index < 1) {
         index = 1
       }
@@ -139,7 +138,20 @@ export default {
         index = this.maxTotalNumber
       }
       return index
+    },
+    clickDelShop () {
+      let delId = this.$store.state.deleteId
+      for (let i = 0; i < this.cartData.result.list.length; i++) {
+        if (this.cartData.result.list[i].id === delId) {
+          this.cartData.result.list.splice(i, 1)
+          this.maxTotalNumber--
+          this.$store.state.showDeleteFlag = false
+          this.showPage(this.thisPage, this.pageShowTotal)
+        }
+      }
     }
+    // clickChangePage () {
+    // }
   },
   mounted () {
     this.$nextTick(function () {
