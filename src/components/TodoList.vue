@@ -4,7 +4,7 @@
       <label for="shopTitle">商品名：<input type="text" v-model="shopTitle" id="shopTitle" /></label>
       <label for="shopNum">数量：<input type="number" v-model="shopNum" class="shop-num" id="shopNum"></label>
       <label for="shopPrice">单价：<input type="number" v-model="shopPrice" class="shop-price" id="shopPrice"></label>
-      <button @click="addShop">添加商品</button>
+      <button @click="addShop()">添加商品</button>
     </div>
     <table cellspacing="0">
       <thead v-if="shopList.length">
@@ -25,7 +25,6 @@
       :content="item"
       :index="index"
       :key="index"
-      @deleteShop="handleDetele"
       @calcTotalMoney="calcTotalPrice"
       @isSelectAll="isSelectAll"
       ></Tbody>
@@ -69,17 +68,17 @@ export default {
       let list = {
         title: this.shopTitle,
         num: this.shopNum,
-        price: this.shopPrice
+        price: this.shopPrice,
+        id: '2991919191'
       }
-      this.shopList.push(list)
+      // this.shopList.push(list)
+      this.cartData.result.list.push(list)
       this.shopTitle = ''
       this.shopNum = ''
       this.shopPrice = ''
       this.calcTotalPrice()
       this.isSelectAll()
-    },
-    handleDetele (index) {
-      this.shopList.splice(index, 1)
+      this.showPage(this.thisPage, this.pageShowTotal)
     },
     init () {
       // console.log('一进页面就加载的函数，输出shopList', this.shopList)
@@ -125,10 +124,13 @@ export default {
     },
     showPage (thisPage, thisPageNumber) {
       this.thisPage = thisPage
+      this.maxTotalNumber = this.cartData.result.list.length
       let startIndex = this.checkPageNumber(1 + thisPageNumber * (thisPage - 1)) - 1
       let endIndex = this.checkPageNumber(thisPageNumber * thisPage)
       this.shopList = []
       this.shopList = this.cartData.result.list.slice(startIndex, endIndex)
+      this.calcTotalPrice()
+      this.isSelectAll()
     },
     checkPageNumber (index) {
       if (index < 1) {
@@ -144,7 +146,6 @@ export default {
       for (let i = 0; i < this.cartData.result.list.length; i++) {
         if (this.cartData.result.list[i].id === delId) {
           this.cartData.result.list.splice(i, 1)
-          this.maxTotalNumber--
           this.$store.state.showDeleteFlag = false
           this.showPage(this.thisPage, this.pageShowTotal)
         }
