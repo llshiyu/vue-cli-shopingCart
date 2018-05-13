@@ -8,7 +8,7 @@
     <td>{{content.price | money}}</td>
     <td>
       <span class="input-a" @click="changeMoney(content, -1)">-</span>
-      <input type="number" v-model="content.num" class="number-input"/>
+      <input type="number" v-model="content.num" class="number-input" readonly/>
       <span class="input-a" @click="changeMoney(content, 1)">+</span>
     </td>
     <td>{{content.price * content.num | money('元')}}</td>
@@ -35,13 +35,10 @@ export default {
   },
   // 在 `methods` 对象中定义方法
   methods: {
-    handleDelete () {
-      this.$emit('deleteShop', this.index)
-    },
     changeMoney (product, way) {
       if (way > 0) {
         product.num++
-      } else {
+      } else if (way < 0) {
         product.num--
         if (product.num < 1) {
           product.num = 1
