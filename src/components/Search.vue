@@ -5,20 +5,12 @@
       <span class="search-btn">搜索</span>
     </div>
     <div class="search-up">
-      <div class="search-upOut">
-        <div class="search-upOut-title">组织：</div>
+      <div class="search-upOut" v-for="(search,searchIndex) of searchList" :key="searchIndex">
+        <div class="search-upOut-title">{{search.label}}：</div>
         <div class="search-upOut-wrap">
           <span class="search-upOut-item search-upOut-itemInChose">不限</span>
-          <div class="search-upOut-item">
-            组织1
-            <i :class="isShowX?'search-upOut-itemInChoseX':'search-upOut-itemInX'">×</i>
-          </div>
-          <div class="search-upOut-item">
-            组织2
-            <i :class="isShowX?'search-upOut-itemInChoseX':'search-upOut-itemInX'">×</i>
-          </div>
-          <div class="search-upOut-item">
-            组织3
+          <div class="search-upOut-item" v-for="(list,listIndex) of search.list" :key="listIndex">
+            {{list.deptName}}
             <i :class="isShowX?'search-upOut-itemInChoseX':'search-upOut-itemInX'">×</i>
           </div>
         </div>
@@ -50,21 +42,39 @@
 </template>
 
 <script>
-  import searchData from '../data/searchData.json'
+import searchData from '../data/searchData.json'
 
-  export default {
-    name: "search"
-  }
+export default {
+  name: 'search',
+  computed: {},
+  props: {},
+  data () {
+    return {
+      searchList: [],
+      searchOptions: {
+        keyword: '', // 搜索字段
+
+      }
+    }
+  },
+  mounted () {
+    this.searchList = searchData.data
+    console.log(this.searchList)
+  },
+  methods: {}
+}
 </script>
 
 <style scoped lang="less">
   .unvisible {
     visibility: hidden;
   }
+
   .content-wrap {
     width: 1000px;
     margin: 0 auto;
   }
+
   .search-container {
     .search-input-box {
       padding: 10px 0 26px;
