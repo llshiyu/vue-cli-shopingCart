@@ -64,7 +64,7 @@
       return {
         selectShowNumberList: [], // 选择一页展示多少条
         selectShowNumber: 10, // 默认一页展示10条,select框的value值
-        showActiveIndex: 1, // 页码样式index
+        // showActiveIndex: 1, // 页码样式index
         thisPage: 1, // 当前选中页数
         inputVal: 1, // 输入框指定去第几页
         showPageArr: [] // 展示哪些页码
@@ -81,18 +81,19 @@
     watch: {
       totalNumber: function () {
         this.thisPage = 1
-        this.showActiveIndex = this.showActivePageIndex
+        // this.showActiveIndex = this.showActivePageIndex
+        this.showActivePageIndex = 1
         this.inputVal = 1
         this.selectShowNumber = this.pageShowTotal
-        this.computedTabArr(1)
+        this.computedTabArr(this.showActivePageIndex)
       }
     },
     methods: {
       init() {
-        this.showActiveIndex = this.showActivePageIndex
+        // this.showActiveIndex = this.showActivePageIndex
         this.selectShowNumber = this.pageShowTotal
         this.selectShowNumberList = [this.pageShowTotal, this.pageShowTotal * 2, this.pageShowTotal * 3]
-        this.computedTabArr(1)
+        this.computedTabArr(this.showActivePageIndex)
       },
       addShowNumber() {
         if (this.selectShowNumber < 50) {
@@ -110,7 +111,7 @@
         this.thisPage = this.checkPage(index * 1)
         this.computedTabArr(this.checkPage(index * 1))
 
-        this.showActiveIndex = this.checkPage(index * 1)
+        this.showActivePageIndex = this.checkPage(index * 1)
         this.inputVal = this.checkPage(index * 1)
 
         if (index >= 1 && index <= this.totalPages) {

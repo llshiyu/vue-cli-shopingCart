@@ -2,6 +2,7 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <h2>{{author}}</h2>
+    <Search></Search>
     <TodoList></TodoList>
     <router-link to="/UsePullRefresh">go</router-link>
   </div>
@@ -9,10 +10,11 @@
 
 <script>
 import TodoList from './TodoList'
+import Search from './Search'
 export default {
   name: 'Home',
   components: {
-    TodoList
+    TodoList, Search
   },
   data () {
     return {

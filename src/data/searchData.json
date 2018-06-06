@@ -1,0 +1,86 @@
+{
+  "data": [
+    {
+      "fieldName": "organ",
+      "label": "组织",
+      "list": [
+        {
+          "deptName": "专属部门",
+          "deptId": 5551
+        },
+        {
+          "deptName": "网关数据部",
+          "deptId": 5552
+        },
+        {
+          "deptName": "二部",
+          "deptId": 5553
+        },
+        {
+          "deptName": "Java",
+          "deptId": 5554
+        },
+        {
+          "deptName": "研发部",
+          "deptId": 5555
+        },
+        {
+          "deptName": "web",
+          "deptId": 5556
+        }
+      ]
+    },
+    {
+      "fieldName": "sort",
+      "label": "分类",
+      "list": [
+        {
+          "deptName": "分类1",
+          "deptId": 6661
+        },
+        {
+          "deptName": "分类2",
+          "deptId": 6662
+        },
+        {
+          "deptName": "分类3",
+          "deptId": 6663
+        },
+        {
+          "deptName": "分类4",
+          "deptId": 6664
+        },
+        {
+          "deptName": "分类5",
+          "deptId": 6665
+        },
+        {
+          "deptName": "分类6",
+          "deptId": 6666
+        }
+      ]
+    },
+    {
+      "fieldName": "requestType",
+      "label": "请求方式",
+      "list": [
+        {
+          "deptName": "get",
+          "deptId": 7771
+        },
+        {
+          "deptName": "post",
+          "deptId": 7772
+        },
+        {
+          "deptName": "put",
+          "deptId": 7773
+        },
+        {
+          "deptName": "delete",
+          "deptId": 7774
+        }
+      ]
+    }
+  ]
+}
