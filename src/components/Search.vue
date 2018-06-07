@@ -1,17 +1,25 @@
 <template>
   <div class="search-container content-wrap">
     <div class="search-input-box">
-      <input class="keyword-input" placeholder="在结果中查询">
-      <span class="search-btn">搜索</span>
+      <input class="keyword-input" v-model="searchOptions.keyword" placeholder="在结果中查询">
+      <span class="search-btn" @click="searchAjax()">搜索</span>
     </div>
     <div class="search-up">
       <div class="search-upOut" v-for="(search,searchIndex) of searchList" :key="searchIndex">
         <div class="search-upOut-title">{{search.label}}：</div>
         <div class="search-upOut-wrap">
-          <span class="search-upOut-item search-upOut-itemInChose">不限</span>
-          <div class="search-upOut-item" v-for="(list,listIndex) of search.list" :key="listIndex">
+          <span class="search-upOut-item"
+                :class="searchOptions.filter[search.fieldName] && searchOptions.filter[search.fieldName].length ? '':'search-upOut-itemInChose'"
+                @click="chooseAll(search.fieldName)">不限</span>
+          <div class="search-upOut-item"
+               v-for="(list,listIndex) of search.list"
+               :key="listIndex"
+               :class="searchOptions.filter[search.fieldName] && searchOptions.filter[search.fieldName].indexOf(list.deptId) > -1 ? 'search-upOut-itemInChose':''"
+               @click="addSearchFilter(search.fieldName, list.deptId)">
             {{list.deptName}}
-            <i :class="isShowX?'search-upOut-itemInChoseX':'search-upOut-itemInX'">×</i>
+            <i
+              :class="searchOptions.filter[search.fieldName] && searchOptions.filter[search.fieldName].indexOf(list.deptId) > -1 ? 'search-upOut-itemInChoseX' : 'search-upOut-itemInX'"
+              >×</i>
           </div>
         </div>
         <div class="search-upOut-addMore unvisible">
@@ -25,16 +33,21 @@
       <div class="search-down-left">
         <div class="search-down-title">排序方式：</div>
         <div class="search-down-left-wrap">
-          <span class="search-down-left-item search-upOut-itemInChose">默认</span>
-          <div class="search-down-left-item">
-            <span>时间</span>
-            <i class="arrow-desc"></i>
+          <span class="search-down-left-item"
+                :class="searchOptions.order.label ? '' : 'search-upOut-itemInChose'"
+                @click="removeSearchOrder()">默认</span>
+          <div class="search-down-left-item"
+               v-for="(order,index) of orderList" :key="index"
+               :class="searchOptions.order.fieldName === order.fieldName ? 'search-upOut-itemInChose' : ''"
+               @click="addSearchOrder(order)">
+            <span>{{order.label}}</span>
+            <i :class="order.rank === 1 ? 'arrow-desc' : 'arrow-asc'"></i>
           </div>
         </div>
       </div>
       <div class="search-down-right">
         <div class="search-down-right-btn">
-          <span class="search-down-right-btn-in">查询</span>
+          <span class="search-down-right-btn-in" @click="searchAjax()">查询</span>
         </div>
       </div>
     </div>
@@ -42,7 +55,8 @@
 </template>
 
 <script>
-import searchData from '../data/searchData.json'
+import searchData from '../data/searchData.json';
+import {deepCopy} from "../assets/js/util";
 
 export default {
   name: 'search',
@@ -51,17 +65,59 @@ export default {
   data () {
     return {
       searchList: [],
+      orderList: [],
       searchOptions: {
         keyword: '', // 搜索字段
-
+        filter: {}, // 分类
+        order: {} // 排序
       }
     }
   },
   mounted () {
     this.searchList = searchData.data
-    console.log(this.searchList)
+    this.orderList = deepCopy(searchData.order) // 深拷贝  浅拷贝 B变A也变  深拷贝 B变A不变
+    // order.rank  1降序desc 2升序asc
+    console.log('mounted searchList', this.searchList, this.orderList)
   },
-  methods: {}
+  methods: {
+    addSearchFilter (filterName, value) {
+      if (!this.searchOptions.filter[filterName]) {
+        this.searchOptions.filter[filterName] = []
+      }
+      if (this.searchOptions.filter[filterName].indexOf(value) < 0) {
+        this.searchOptions.filter[filterName].push(value)
+        this.searchAjax()
+      } else {
+        this.removeSearchFilter(filterName, value)
+      }
+    }, // 添加搜索项
+    removeSearchFilter (filterName, value) {
+      let index = this.searchOptions.filter[filterName].indexOf(value)
+      this.searchOptions.filter[filterName].splice(index, 1)
+      this.searchAjax()
+    }, // 移除搜索项
+    chooseAll (filterName) {
+      this.searchOptions.filter[filterName] = []
+      this.searchAjax()
+    }, // 选择无限
+    addSearchOrder (order) {
+      order.rank = order.rank === 1 ? 2 : 1
+      this.searchOptions.order = {
+        label: order.label,
+        fieldName: order.fieldName,
+        rank: order.rank
+      }
+      this.searchAjax()
+    }, // 添加排序项
+    removeSearchOrder () {
+      this.searchOptions.order = {}
+      this.searchAjax()
+    }, // 去掉排序项
+    searchAjax () {
+      this.$forceUpdate()
+      console.log('searchAjax searchOptions', this.searchOptions)
+    } // 搜索发Ajax
+  }
 }
 </script>
 
@@ -272,14 +328,14 @@ export default {
       height: 30px;
     }
     .arrow-desc {
-      background-image: url('../assets/arrow-desc.png');
+      background-image: url('../assets/img/arrow-desc.png');
       background-size: 100%;
       width: 5px;
       height: 14px;
       display: inline-block;
     }
     .arrow-asc {
-      background-image: url('../assets/arrow-asc.png');
+      background-image: url('../assets/img/arrow-asc.png');
       background-size: 100%;
       width: 5px;
       height: 14px;
@@ -289,10 +345,10 @@ export default {
       background-color: #3F94FC;
       color: #fff !important;
       .arrow-asc {
-        background-image: url('../assets/arrow-asc-white.png');
+        background-image: url('../assets/img/arrow-asc-white.png');
       }
       .arrow-desc {
-        background-image: url('../assets/arrow-desc-white.png');
+        background-image: url('../assets/img/arrow-desc-white.png');
       }
     }
   }

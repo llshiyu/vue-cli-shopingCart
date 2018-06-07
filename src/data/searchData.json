@@ -27,6 +27,38 @@
         {
           "deptName": "web",
           "deptId": 5556
+        },
+        {
+          "deptName": "qwe",
+          "deptId": 5557
+        },
+        {
+          "deptName": "rty",
+          "deptId": 5558
+        },
+        {
+          "deptName": "uio",
+          "deptId": 5559
+        },
+        {
+          "deptName": "asd",
+          "deptId": 5560
+        },
+        {
+          "deptName": "fgh",
+          "deptId": 5561
+        },
+        {
+          "deptName": "jkl",
+          "deptId": 5562
+        },
+        {
+          "deptName": "zxc",
+          "deptId": 5563
+        },
+        {
+          "deptName": "vbn",
+          "deptId": 5564
         }
       ]
     },
@@ -81,6 +113,17 @@
           "deptId": 7774
         }
       ]
+    }
+  ],
+  "order": [
+    {
+      "label": "更新时间",
+      "fieldName": "updateTimeOrder",
+      "rank": 2
+    }, {
+      "label": "申请量",
+      "fieldName": "applyCountOrder",
+      "rank": 2
     }
   ]
 }
