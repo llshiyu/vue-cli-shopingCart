@@ -7,13 +7,12 @@
     <div class="search-up">
       <div class="search-upOut" v-for="(search,searchIndex) of searchList" :key="searchIndex">
         <div class="search-upOut-title">{{search.label}}：</div>
-        <div class="search-upOut-wrap">
+        <div class="search-upOut-wrap" :id="search.fieldName">
           <span class="search-upOut-item"
                 :class="searchOptions.filter[search.fieldName] && searchOptions.filter[search.fieldName].length ? '':'search-upOut-itemInChose'"
                 @click="chooseAll(search.fieldName)">不限</span>
           <div class="search-upOut-item"
-               v-for="(list,listIndex) of search.list"
-               :key="listIndex"
+               v-for="(list,listIndex) of search.list" :key="listIndex"
                :class="searchOptions.filter[search.fieldName] && searchOptions.filter[search.fieldName].indexOf(list.deptId) > -1 ? 'search-upOut-itemInChose':''"
                @click="addSearchFilter(search.fieldName, list.deptId)">
             {{list.deptName}}
@@ -22,9 +21,11 @@
               >×</i>
           </div>
         </div>
-        <div class="search-upOut-addMore unvisible">
-          <span class="search-upOut-addMore">更多<i class="arrow-up"></i></span>
-          <span class="search-upOut-addMore">收起<i class="arrow-down"></i></span>
+        <div class="search-upOut-addMore" v-if="showAll[search.fieldName] && showAll[search.fieldName].needShow">
+          <span class="search-upOut-addMore" v-if="!showAll[search.fieldName].isShowAll"
+                @click="clickMore(search.fieldName)">更多<i class="arrow-up"></i></span>
+          <span class="search-upOut-addMore" v-if="showAll[search.fieldName].isShowAll"
+                @click="clickMore(search.fieldName)">收起<i class="arrow-down"></i></span>
         </div>
       </div>
     </div>
@@ -55,31 +56,63 @@
 </template>
 
 <script>
-import searchData from '../data/searchData.json';
-import {deepCopy} from "../assets/js/util";
-
+import searchData from '../data/searchData.json'
+import {deepCopy, addClass, removeClass} from "../assets/js/util"
 export default {
   name: 'search',
   computed: {},
   props: {},
   data () {
     return {
+      FILTER_WRAP_DEFAULT_HEIGHT: 35, // 筛选行默认高度(比正常行高多5px，防止出现偏差)
       searchList: [],
       orderList: [],
       searchOptions: {
         keyword: '', // 搜索字段
         filter: {}, // 分类
         order: {} // 排序
-      }
+      },
+      showAll: {} // 更多展开
     }
   },
-  mounted () {
+  created () {
     this.searchList = searchData.data
-    this.orderList = deepCopy(searchData.order) // 深拷贝  浅拷贝 B变A也变  深拷贝 B变A不变
-    // order.rank  1降序desc 2升序asc
+    this.getOrderList()
+    for (let search of this.searchList) {
+      this.isNeedShowAll(search.fieldName)
+    }
     console.log('mounted searchList', this.searchList, this.orderList)
   },
   methods: {
+    isNeedShowAll (fieldName) {
+      let fieldWrap, fieldWrapHeight
+      this.showAll[fieldName] = {}
+      setTimeout(() => {
+        fieldWrap = document.getElementById(fieldName)
+        fieldWrapHeight = fieldWrap.clientHeight
+        if(fieldWrapHeight > this.FILTER_WRAP_DEFAULT_HEIGHT){
+          this.showAll[fieldName].needShow = true
+          this.showAll[fieldName].isShowAll = false
+          this.$forceUpdate()
+          addClass(fieldWrap, 'over-height-hidden')
+        }
+      }, 10);
+    }, // 是否需要显示 更多 展开
+    clickMore (fieldName) {
+      let filedWrap = document.getElementById(fieldName)
+      if (this.showAll[fieldName].isShowAll) {
+        this.showAll[fieldName].isShowAll = false
+        addClass(filedWrap, 'over-height-hidden')
+      } else {
+        this.showAll[fieldName].isShowAll = true
+        removeClass(filedWrap, 'over-height-hidden')
+      }
+      this.$forceUpdate()
+    }, // 展开、收起
+    getOrderList () {
+      this.orderList = deepCopy(searchData.order) // 深拷贝  浅拷贝 B变A也变  深拷贝 B变A不变
+      // order.rank  1降序desc 2升序asc
+    }, // 获取排序列表
     addSearchFilter (filterName, value) {
       if (!this.searchOptions.filter[filterName]) {
         this.searchOptions.filter[filterName] = []
@@ -111,6 +144,7 @@ export default {
     }, // 添加排序项
     removeSearchOrder () {
       this.searchOptions.order = {}
+      this.getOrderList()
       this.searchAjax()
     }, // 去掉排序项
     searchAjax () {
@@ -326,6 +360,7 @@ export default {
     }
     .over-height-hidden {
       height: 30px;
+      overflow: hidden;
     }
     .arrow-desc {
       background-image: url('../assets/img/arrow-desc.png');

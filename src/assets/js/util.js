@@ -1,29 +1,29 @@
-//全局数据
+// 全局数据
 export function GData (GKey, GValue) {
-  if (GValue != undefined) {
-    window[GKey] = GValue;
+  if (GValue !== undefined) {
+    window[GKey] = GValue
   } else {
-    return window[GKey];
+    return window[GKey]
   }
 }
 
 export function sessionData (key, value) {
   if (value) {
-    value = JSON.stringify(value);
+    value = JSON.stringify(value)
     sessionStorage.setItem(key, value)
   } else {
-    let value = sessionStorage.getItem(key);
-    value = JSON.parse(value);
+    let value = sessionStorage.getItem(key)
+    value = JSON.parse(value)
     // sessionStorage.removeItem(key)
-    return value;
+    return value
   }
 }
 
 export function sessionId (sessionId) {
   if (sessionId) {
-    sessionStorage.setItem("sessionId", sessionId);
+    sessionStorage.setItem("sessionId", sessionId)
   } else {
-    return sessionStorage.getItem("sessionId");
+    return sessionStorage.getItem("sessionId")
   }
 }
 
@@ -40,12 +40,12 @@ export function saveUsername (username) {
  * @param source
  */
 export function deepCopy (source) {
-  var result = {};
+  var result = {}
   for (var key in source) {
-    result[key] = typeof source[key] === 'object' ? deepCopy(source[key]) : source[key];
+    result[key] = typeof source[key] === 'object' ? deepCopy(source[key]) : source[key]
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -54,11 +54,11 @@ export function deepCopy (source) {
  * @returns {null}
  */
 export function setTit (title) {
-  if (!title) return;
-  document.title = title;
+  if (!title) return
+  document.title = title
 
   try {
-    setTitle(title);
+    setTitle(title)
   } catch (e) {
   }
 }
@@ -68,16 +68,16 @@ export function setTit (title) {
  * @returns {*}
  */
 export function getQueryStringHr (name) {
-  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-  var r = window.location.search.substr(1).match(reg);
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)")
+  var r = window.location.search.substr(1).match(reg)
   if (r === null) {
-    var reg2 = /^.*?[?]/;
+    var reg2 = /^.*?[?]/
     var r2 = window.location.hash.replace(reg2, "")
-    r = r2.match(reg);
+    r = r2.match(reg)
   }
 
-  if (r != null) return decodeURIComponent((r[2]));
-  return null;
+  if (r != null) return decodeURIComponent((r[2]))
+  return null
 }
 /**
  * 关闭toon
@@ -85,57 +85,57 @@ export function getQueryStringHr (name) {
 export function closeWindow () {
   var params = {
     "functionType": 1
-  };
-  window.location.href = "toon://mwap/window?params=" + JSON.stringify(params);
+  }
+  window.location.href = "toon://mwap/window?params=" + JSON.stringify(params)
 }
 
 /**
  * 加载更多的函数 ； shaobo
- *  droploadUpOnScroll(callback , "MoreAndMore");
+ *  droploadUpOnScroll(callback , "MoreAndMore")
  */
 export function droploadUpOnScroll (callback, ele, scrollEle) {
   if (!callback) {
-    window.onscroll = false;
-    return false;
+    window.onscroll = false
+    return false
   }
-  //默认距离底部差值开始刷新列表
-  var heightDifference = 0;
-  if (typeof ele == 'number') {
+  // 默认距离底部差值开始刷新列表
+  var heightDifference = 0
+  if (typeof ele === 'number') {
     heightDifference = ele
   }
   if (typeof ele != 'string') {
-    ele = "droploadDOM";
+    ele = "droploadDOM"
     if (!document.getElementById(ele)) {
-      var droploadDOM = document.createElement("p");
-      droploadDOM.id = 'droploadDOM';
-      document.body.appendChild(droploadDOM);
+      var droploadDOM = document.createElement("p")
+      droploadDOM.id = 'droploadDOM'
+      document.body.appendChild(droploadDOM)
     }
   }
-  var MAM = document.getElementById(ele);	//绑定元素
+  var MAM = document.getElementById(ele) // 绑定元素
 
-  var gap = parseInt(MAM.getAttribute("data-gap")) || heightDifference; //获取差值
+  var gap = parseInt(MAM.getAttribute("data-gap")) || heightDifference // 获取差值
   if (!scrollEle) {
-    var winHeight = window.innerHeight;
-    var mTop, sTop, result;
+    var winHeight = window.innerHeight
+    var mTop, sTop, result
     window.onscroll = function () {
 
-      mTop = MAM.offsetTop;
-      sTop = document.body.scrollTop;  //滚动条距离顶部
-      result = mTop - sTop;
+      mTop = MAM.offsetTop
+      sTop = document.body.scrollTop  //滚动条距离顶部
+      result = mTop - sTop
       if (result <= (winHeight + gap)) {
-        callback();  //回调
+        callback()  //回调
       }
     }
   } else {
     let scrollContainer = document.getElementById(scrollEle)
-    let winHeight = scrollContainer.offsetHeight;
-    let mTop, sTop, result;
+    let winHeight = scrollContainer.offsetHeight
+    let mTop, sTop, result
     scrollContainer.onscroll = function () {
-      mTop = MAM.offsetTop;
-      sTop = scrollContainer.scrollTop;  //滚动条距离顶部
-      result = mTop - sTop;
+      mTop = MAM.offsetTop
+      sTop = scrollContainer.scrollTop  //滚动条距离顶部
+      result = mTop - sTop
       if (result <= (winHeight + gap)) {
-        callback();  //回调
+        callback()  //回调
       }
     }
   }
@@ -149,21 +149,21 @@ export function droploadUpOnScroll (callback, ele, scrollEle) {
  */
 export function pullUpOnScroll (id, callback, scrollBottomH) {
 
-  id = id ? id : '';
-  var ele = document.getElementById(id);
-  console.log(ele);
+  id = id ? id : ''
+  var ele = document.getElementById(id)
+  console.log(ele)
   if(!ele){ return false }
   if (typeof scrollBottomH != 'number') {
     scrollBottomH = 0
   }
   if (ele && !callback) {
-    ele.onscroll = false;
-    return false;
+    ele.onscroll = false
+    return false
   }
   ele.onscroll = function () {
-    var H = ele.scrollHeight - ele.offsetHeight;
+    var H = ele.scrollHeight - ele.offsetHeight
     if (H - ele.scrollTop <= scrollBottomH) {
-      console.log('到底了');
+      console.log('到底了')
       callback()
     }
   }
@@ -174,77 +174,77 @@ export function pullUpOnScroll (id, callback, scrollBottomH) {
  * @param {Object} param
  */
 export function confirm (param) {
-  var componentsAlert = document.getElementById("componentsAlert") || false;
+  var componentsAlert = document.getElementById("componentsAlert") || false
   //if(!param ){componentsAlert.style={display : "none"}}
   if (!param && componentsAlert.parentNode) {
-    componentsAlert.parentNode.removeChild(componentsAlert);
+    componentsAlert.parentNode.removeChild(componentsAlert)
   }
-  var param = param || {};
-  param.show = param.show || true; //默认显示
-  param.title = param.title || "";
-  param.message = param.message || "可能是网络环境不稳定引起的系统异常，请新打开页面后重试！";
-  param.btnEsc = param.btnEsc == '' ? '' : param.btnEsc || "取消";
-  param.btnOk = param.btnOk || "确定";
+  var param = param || {}
+  param.show = param.show || true //默认显示
+  param.title = param.title || ""
+  param.message = param.message || "可能是网络环境不稳定引起的系统异常，请新打开页面后重试！"
+  param.btnEsc = param.btnEsc === '' ? '' : param.btnEsc || "取消"
+  param.btnOk = param.btnOk || "确定"
   param.btnOkFun = param.btnOkFun || function () {
-    };
+    }
   param.btnEscFun = param.btnEscFun || function () {
-    };
-  param.input = param.input || false;
-  param.class = param.class || "";
+    }
+  param.input = param.input || false
+  param.class = param.class || ""
   if (!componentsAlert) {
-    var style = '<style>';
-    style += '.componentsAlert {z-index: 999;position: fixed;top:0%;left: 0;width: 100%;height: 100%;background: rgba(0,0,0,.7); }\
-						.componentsAlert .content{color: #030303;position: fixed;top:50%;left: 50%; -webkit-transform: translate(-50%,-50%);width:270px;background: rgba(255,255,255,0.90);border-radius: 5px;text-align: center;}\
-						.componentsAlert .title{padding:20px 0 0 0 ;}\
-					  .componentsAlert .message{font-size: 15px;line-height: 150%;#color:#030303;padding:15px 15px 15px 15px;display: inline-block;text-align: left}\
-						.componentsAlert .btnGroup{line-height: 43px;height: 43px; font-size: 0; }\
-						.componentsAlert .btnGroup .btn {display:none; font-size:17px }\
-						.componentsAlert .btnGroup.esc.ok .btn {width: 50%;display: inline-block;}\
-						.componentsAlert .btnGroup.ok .btn.btnOk {width: 50%;display: inline-block;}';
-    style += param.clsBtnOk ? '.componentsAlert .btnGroup .btnOk{' + param.clsBtnOk + '}' : '.componentsAlert .btnGroup .btnOk{color: #007AFF;}';
-    style += param.clsBtnEsc ? '.componentsAlert .btnGroup .btnEsc{' + param.btnEsc + '}' : '.componentsAlert .btnGroup .btnEsc{color: #007AFF;}';
-    style += '.componentsAlert .lsh-confirm-pwd{margin: 0 auto 15px auto;width: 240px;height: 24px;padding-left: 6px;}\
-						.componentsAlert .lsh-confirm-pwd::after{border-radius: 2px;}\
-						.componentsAlert .lsh-confirm-input{width: 240px;height: 24px;position:absolute;z-index:99;left:6px;top:2px;line-height: 24px;font-size: 13px;color: #000;}\
+    var style = '<style>'
+    style += '.componentsAlert {z-index: 999position: fixedtop:0%left: 0width: 100%height: 100%background: rgba(0,0,0,.7) }\
+						.componentsAlert .content{color: #030303position: fixedtop:50%left: 50% -webkit-transform: translate(-50%,-50%)width:270pxbackground: rgba(255,255,255,0.90)border-radius: 5pxtext-align: center}\
+						.componentsAlert .title{padding:20px 0 0 0 }\
+					  .componentsAlert .message{font-size: 15pxline-height: 150%#color:#030303padding:15px 15px 15px 15pxdisplay: inline-blocktext-align: left}\
+						.componentsAlert .btnGroup{line-height: 43pxheight: 43px font-size: 0 }\
+						.componentsAlert .btnGroup .btn {display:none font-size:17px }\
+						.componentsAlert .btnGroup.esc.ok .btn {width: 50%display: inline-block}\
+						.componentsAlert .btnGroup.ok .btn.btnOk {width: 50%display: inline-block}'
+    style += param.clsBtnOk ? '.componentsAlert .btnGroup .btnOk{' + param.clsBtnOk + '}' : '.componentsAlert .btnGroup .btnOk{color: #007AFF}'
+    style += param.clsBtnEsc ? '.componentsAlert .btnGroup .btnEsc{' + param.btnEsc + '}' : '.componentsAlert .btnGroup .btnEsc{color: #007AFF}'
+    style += '.componentsAlert .lsh-confirm-pwd{margin: 0 auto 15px autowidth: 240pxheight: 24pxpadding-left: 6px}\
+						.componentsAlert .lsh-confirm-pwd::after{border-radius: 2px}\
+						.componentsAlert .lsh-confirm-input{width: 240pxheight: 24pxposition:absolutez-index:99left:6pxtop:2pxline-height: 24pxfont-size: 13pxcolor: #000}\
 						'
-    style += '</style>';
+    style += '</style>'
 
-    var html = '<div class="componentsAlert  ' + param.class + ' "  style="display:none;" id="componentsAlert">';
-    html += '<div class="content">';
-    html += param.title ? '<p class="title" > ' + param.title + '</p>' : '';
-    html += '<div style="overflow: hidden;text-align: center"><p  class="message"  >';
-    html += param.message;
-    html += '</p></div>';
-    html += param.input ? '<div class="lsh-confirm-pwd hairline"><input maxlength="18" id="textPwd" type="password" class="lsh-confirm-input" placeholder="输入实名认证密码"></div>' : '';
-    html += '<p class="btnGroup ' + (param.btnEsc != "" ? "esc" : "") + ' ok hairline-top">';
-    html += '<span  class="btn btnEsc hairline-right" id="AlertBtnEsc" >' + param.btnEsc + '</span>';
-    html += '<span class="btn btnOk "  id="AlertBtnOk"  > ' + param.btnOk + '</span>';
-    html += '</p>';
-    html += '</div></div>';
-    var alertDiv = document.createElement("div");
-    alertDiv.innerHTML = style + html;
-    document.body.appendChild(alertDiv);
-    componentsAlert = document.getElementById("componentsAlert");
+    var html = '<div class="componentsAlert  ' + param.class + ' "  style="display:none" id="componentsAlert">'
+    html += '<div class="content">'
+    html += param.title ? '<p class="title" > ' + param.title + '</p>' : ''
+    html += '<div style="overflow: hiddentext-align: center"><p  class="message"  >'
+    html += param.message
+    html += '</p></div>'
+    html += param.input ? '<div class="lsh-confirm-pwd hairline"><input maxlength="18" id="textPwd" type="password" class="lsh-confirm-input" placeholder="输入实名认证密码"></div>' : ''
+    html += '<p class="btnGroup ' + (param.btnEsc != "" ? "esc" : "") + ' ok hairline-top">'
+    html += '<span  class="btn btnEsc hairline-right" id="AlertBtnEsc" >' + param.btnEsc + '</span>'
+    html += '<span class="btn btnOk "  id="AlertBtnOk"  > ' + param.btnOk + '</span>'
+    html += '</p>'
+    html += '</div></div>'
+    var alertDiv = document.createElement("div")
+    alertDiv.innerHTML = style + html
+    document.body.appendChild(alertDiv)
+    componentsAlert = document.getElementById("componentsAlert")
     //绑定事件
     document.getElementById("AlertBtnEsc").addEventListener('click', function () {
-      param.btnEscFun();
-      componentsAlert.style.display = "none";
+      param.btnEscFun()
+      componentsAlert.style.display = "none"
       if (componentsAlert.parentNode) {
-        componentsAlert.parentNode.removeChild(componentsAlert);
+        componentsAlert.parentNode.removeChild(componentsAlert)
       }
-    }, false);
+    }, false)
     document.getElementById("AlertBtnOk").addEventListener('click', function () {
-      param.btnOkFun();
-      componentsAlert.style.display = "none";
+      param.btnOkFun()
+      componentsAlert.style.display = "none"
       if (componentsAlert.parentNode) {
-        componentsAlert.parentNode.removeChild(componentsAlert);
+        componentsAlert.parentNode.removeChild(componentsAlert)
       }
-    }, false);
+    }, false)
   }
   if (param.show) {
-    componentsAlert.style.display = "block";
+    componentsAlert.style.display = "block"
   } else {
-    componentsAlert.style.display = "none";
+    componentsAlert.style.display = "none"
   }
 }
 /**
@@ -253,10 +253,10 @@ export function confirm (param) {
  * @returns {*}
  */
 export function zeroFill (num) {
-  if (num > 0 && num < 10 || num.toString().length == 1 && num == 0) {
-    return '0' + num;
+  if (num > 0 && num < 10 || num.toString().length === 1 && num === 0) {
+    return '0' + num
   }
-  return num;
+  return num
 }
 /**
  * 毫秒转换友好的显示格式
@@ -266,19 +266,19 @@ export function zeroFill (num) {
  */
 export function dateStr (date) {
   //获取js 时间戳
-  var time = new Date().getTime();
-  var _data = new Date(parseInt(date));
+  var time = new Date().getTime()
+  var _data = new Date(parseInt(date))
   //去掉 js 时间戳后三位，与php 时间戳保持一致
-  time = parseInt((time - date) / 1000);
+  time = parseInt((time - date) / 1000)
 
   //存储转换值
-  var s;
+  var s
   if (time < 60 * 1) {//1分钟内
-    return '刚刚';
+    return '刚刚'
   } else if ((time < 60 * 60) && (time >= 60 * 1)) {
     //超过十分钟少于1小时
-    s = Math.floor(time / 60);
-    return s + "分钟前";
+    s = Math.floor(time / 60)
+    return s + "分钟前"
   } else if ((time < 60 * 60 * 24) && (time >= 60 * 60)) {
     //判断是否为昨天
     //下个月
@@ -288,13 +288,13 @@ export function dateStr (date) {
       return "昨天 "
     }
     //超过1小时少于24小时
-    s = Math.floor(time / 60 / 60);
-    return s + "小时前";
+    s = Math.floor(time / 60 / 60)
+    return s + "小时前"
   } else if ((time < 60 * 60 * 24 * 2) && (time >= 60 * 60 * 24)) {
     //昨天
     return "昨天 "
   } else {
-    return false;
+    return false
   }
 }
 /**
@@ -315,7 +315,7 @@ export function dateFormat (timestamp, fmt) {
     's+': _data.getSeconds(), // 秒
     'q+': Math.floor((_data.getMonth() + 3) / 3), // 季度
     'S': _data.getMilliseconds() // 毫秒
-  };
+  }
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (_data.getFullYear() + '').substr(4 - RegExp.$1.length))
   }
@@ -328,10 +328,10 @@ export function dateFormat (timestamp, fmt) {
 }
 export function DownURL (url) {
   try {
-    var elemIF = document.createElement("iframe");
-    elemIF.src = url;
-    elemIF.style.display = "none";
-    document.body.appendChild(elemIF);
+    var elemIF = document.createElement("iframe")
+    elemIF.src = url
+    elemIF.style.display = "none"
+    document.body.appendChild(elemIF)
   } catch (e) {
     console.log('下载失败')
   }
@@ -343,42 +343,42 @@ export function DownURL (url) {
  * @returns {*}
  */
 export function timestampChangeDate (timestamp, type) {
-  timestamp = timestamp ? timestamp : 0;
-  type = type ? type : '-';
-  var T = new Date(timestamp);
-  var Y = T.getFullYear();
-  var M = T.getMonth() + 1;
-  M = M > 10 ? M : '0' + M;
-  var D = T.getDate();
-  D = D > 10 ? D : '0' + D;
-  return Y + type + M + type + D;
+  timestamp = timestamp ? timestamp : 0
+  type = type ? type : '-'
+  var T = new Date(timestamp)
+  var Y = T.getFullYear()
+  var M = T.getMonth() + 1
+  M = M > 10 ? M : '0' + M
+  var D = T.getDate()
+  D = D > 10 ? D : '0' + D
+  return Y + type + M + type + D
 }
 
 export function hasClass (elem, cls) {
-  cls = cls || '';
-  if (cls.replace(/\s/g, '').length == 0) return false; //当cls没有参数时，返回false
-  return new RegExp(' ' + cls + ' ').test(' ' + elem.className + ' ');
+  cls = cls || ''
+  if (cls.replace(/\s/g, '').length === 0) return false //当cls没有参数时，返回false
+  return new RegExp(' ' + cls + ' ').test(' ' + elem.className + ' ')
 }
 
 export function addClass (ele, cls) {
   if (!hasClass(ele, cls)) {
-    ele.className = ele.className == '' ? cls : ele.className + ' ' + cls;
+    ele.className = ele.className === '' ? cls : ele.className + ' ' + cls
   }
 }
 
 export function removeClass (ele, cls) {
   if (hasClass(ele, cls)) {
-    var newClass = ' ' + ele.className.replace(/[\t\r\n]/g, '') + ' ';
+    var newClass = ' ' + ele.className.replace(/[\t\r\n]/g, '') + ' '
     while (newClass.indexOf(' ' + cls + ' ') >= 0) {
-      newClass = newClass.replace(' ' + cls + ' ', ' ');
+      newClass = newClass.replace(' ' + cls + ' ', ' ')
     }
-    ele.className = newClass.replace(/^\s+|\s+$/g, '');
+    ele.className = newClass.replace(/^\s+|\s+$/g, '')
   }
 }
 
 export function convSpecialChar (str) {
-  str = str.replace(/[\#\＃]/g,'').replace(/[\<]/g,'＜').replace(/[\>]/g,'＞').replace(/[\;]/g,'；').replace(/[\']/g,'＇').replace(/[\"]/g,'＂').replace(/[\&]/g,'＆').replace(/[\\]/g,'＼');
-  str = str.replace(/\r|\n/g, '==br==');
+  str = str.replace(/[\#\＃]/g,'').replace(/[\<]/g,'＜').replace(/[\>]/g,'＞').replace(/[\]/g,'；').replace(/[\']/g,'＇').replace(/[\"]/g,'＂').replace(/[\&]/g,'＆').replace(/[\\]/g,'＼')
+  str = str.replace(/\r|\n/g, '==br==')
   return str
 }
 
@@ -388,30 +388,30 @@ export function convSpecialChar (str) {
 export function buryData (buryName,data) {
   let param = {
     toon_type: "102"  //北京通
-  };
+  }
   if (/toontype/.test( navigator.userAgent.toLowerCase() )){
-    var str = JSON.stringify(navigator.userAgent.toLowerCase());
-    var matchResult =/toontype(\/)(\d+)/.exec(str);
-    param.toon_type = matchResult[matchResult.length-1];
+    var str = JSON.stringify(navigator.userAgent.toLowerCase())
+    var matchResult =/toontype(\/)(\d+)/.exec(str)
+    param.toon_type = matchResult[matchResult.length-1]
   }
   for(var key in data){
     if(data.hasOwnProperty(key)===true){
-      param[key]=data[key];
+      param[key]=data[key]
     }
   }
 // 这里需要判断是在 App 里还是在普通的浏览器里，例如可以根据 UserAgent 或者 Cookie 来判断
   if (/toon/.test( navigator.userAgent.toLowerCase() )) {
     // 获取用户信息
       sa.getAppStatus((app_info) =>{
-        sa.identify(app_info.distinct_id);
+        sa.identify(app_info.distinct_id)
               //埋点
-        sa.quick('autoTrack');
-        sa.track(buryName, param);
-    });
+        sa.quick('autoTrack')
+        sa.track(buryName, param)
+    })
   } else {
     //埋点
-    sa.quick('autoTrack');
-    sa.track(buryName, param);
+    sa.quick('autoTrack')
+    sa.track(buryName, param)
   }
 }
 
@@ -541,25 +541,25 @@ export function toastTip (type, text, cb) {
 
 export function showMsgBubble (msgCount) {
   let bubbleDom = document.getElementById('msgBubble'),
-    clsName = '';
+    clsName = ''
 
   if (msgCount < 1) {
-    clsName = '';
+    clsName = ''
     msgCount = ''
   } else if (msgCount < 10) {
-    clsName = 'single';
+    clsName = 'single'
   } else if (msgCount < 100) {
-    clsName = 'double';
+    clsName = 'double'
   } else {
-    clsName = 'long';
+    clsName = 'long'
     msgCount = '99+'
   }
-  bubbleDom.setAttribute('class', clsName);
-  bubbleDom.innerText = msgCount;
+  bubbleDom.setAttribute('class', clsName)
+  bubbleDom.innerText = msgCount
 }
 
 export function setUserInfo (userInfo) {
-  userInfo = userInfo || {};
+  userInfo = userInfo || {}
   sessionStorage.setItem('loggedUser', JSON.stringify(userInfo))
 }
 
@@ -575,26 +575,26 @@ export function setUserInfo (userInfo) {
  *  organunitName: '市交通委',
  *  createTime: 1526457343257,
  *  updateTime: 1526457343257
- *};
+ *}
  *
  * @param fieldName 提取的具体字段(非必填)：如getUserInfo('userName')，仅返回当前登录用户姓名
  * @returns {*}
  */
 export function getUserInfo (fieldName) {
 
-  let userInfo = sessionStorage.getItem('loggedUser') && JSON.parse(sessionStorage.getItem('loggedUser')) || null;
+  let userInfo = sessionStorage.getItem('loggedUser') && JSON.parse(sessionStorage.getItem('loggedUser')) || null
   if (userInfo && fieldName) {
-    return userInfo[fieldName];
+    return userInfo[fieldName]
   }
-  return userInfo;
+  return userInfo
 }
 
 // 判断当前是否登录状态
 export function isLogged () {
   if (!getUserInfo() || !getUserInfo('userId')) {
-    return false;
+    return false
   }
-  return true;
+  return true
 }
 
 // 版权信息
@@ -606,7 +606,7 @@ export function getCopyright () {
 export function setManCount (datas) {
   let applyData = document.getElementById('applyData'),
       examineData = document.getElementById('examineData'),
-      collectData = document.getElementById('collectData');
+      collectData = document.getElementById('collectData')
   applyData.innerText = datas.auditNum
   examineData.innerText = datas.checkNum
   collectData.innerText = datas.houseNum
@@ -672,10 +672,10 @@ export function changeUrlPath (url) {
   url = url[0] === '/' ? url.substr(1) : url
 
   let urlArr = url.split('/'),
-    path = urlArr[0];
+    path = urlArr[0]
 
   if (configM.interfacePath[path]) {
-    urlArr[0] = configM.interfacePath[path];
+    urlArr[0] = configM.interfacePath[path]
     return urlArr.join('/')
   }
 
