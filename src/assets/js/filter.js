@@ -199,5 +199,14 @@ Vue.filter('analyseTime', function (timestamp, formatType, isShort) {
     return backTime;
 });
 
+/***
+ * 过滤HTML标签
+ */
+Vue.filter('filterHTMLTag', function (msg) {
+  let msgs = msg.replace(/<\/?[^>]*>/g, '');  //去除HTML Tag
+  msgs = msgs.replace(/[|]*\n/, '')  //去除行尾空格
+  msgs = msgs.replace(/&nbsp;/ig, ''); //去掉npsp
+  return msgs;
+});
 
 
