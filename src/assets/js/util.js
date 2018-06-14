@@ -681,3 +681,116 @@ export function changeUrlPath (url) {
 
   return url
 }
+
+
+/***
+ * 插入排序
+ * ----将第一个元素视为有序序列，遍历数组，将之后的元素依次插入这个构建的有序序列中
+ * ----时间复杂度：最好O(n)，最坏O(n²)
+ * ----是稳定的算法。（稳定性，是指相同的元素在排序后是否还保持相对的位置。）
+ * （要注意的是对于不稳定的排序算法，只要举出一个实例，即可说明它的不稳定性；而对于稳定的排序算法，必须对算法进行分析从而得到稳定的特性。
+ 比如 [3, 3, 1]，排序后，还是 [3, 3, 1]，但是其实是第二个 3 在 第一个 3 前，那这就是不稳定的排序算法。）
+ * ----优势：当数组是快要排序好的状态或者问题规模比较小的时候，插入排序效率更高。这也是为什么 v8 会在数组长度小于等于 10 的时候采用插入排序。
+ * @param arr
+ * @returns {*}
+ */
+function instertionSort(arr) {
+  for (var i = 1; i < arr.length; i++) {
+    var element = arr[i];
+    for (var j = i - 1; j >= 0; j--) {
+      var tmp = arr[j];
+      var order = tmp - element;
+      if (order > 0) {
+        arr[j + 1] = tmp;
+      } else {
+        break;
+      }
+    }
+    arr[j + 1] = element;
+  }
+  return arr;
+}
+var arr1 = [1, 4, 2]
+console.log(instertionSort(arr1))
+
+/***
+ * 快速排序
+ * ----选择一个元素作为"基准"
+ 小于"基准"的元素，都移到"基准"的左边；大于"基准"的元素，都移到"基准"的右边。
+ 对"基准"左边和右边的两个子集，不断重复第一步和第二步，直到所有子集只剩下一个元素为止。
+ * ----需要额外的空间存储左右数组
+ * @param arr
+ * @returns {*}
+ */
+function quickSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+  var pivotIndex = Math.floor(arr.length / 2);
+  var pivot = arr.splice(pivotIndex, 1);
+  console.log(arr, pivot)
+  var left = [], right = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
+    }
+  }
+  console.log('left', left, 'right', right)
+  return quickSort(left).concat(pivot, quickSort(right))
+}
+var arr2 = [2, 6, 34, 12, 43, 121, 65, 4, 0]
+console.log(quickSort(arr2))
+
+/***
+ * 利用下标进行快排
+ * @param arr
+ * @returns {*}
+ */
+function quickSortInPace(arr) {
+  /***
+   * 交换数组里的值
+   * @param arr
+   * @param a
+   * @param b
+   */
+  function swap(arr, a, b) {
+    var t = arr[a];
+    arr[a] = arr[b];
+    arr[b] = t;
+  }
+
+  /***
+   * 排序主要函数
+   * @param arr
+   * @param left
+   * @param right
+   */
+  function partition(arr, left, right) {
+    var pivot = arr[left], storeIndex = left;
+    // 第一个不动，后面的和第一个比，小的往前放，大的往后放，pivotIndex记录小的和大的的分界点
+    for (var i = left + 1; i <= right; i++) {
+      if (arr[i] < pivot) {
+        swap(arr, i, ++storeIndex);
+      }
+    }
+    // 第一个和分界点交换
+    swap(arr, left, storeIndex);
+    return storeIndex;
+  }
+
+  function sort(arr, left, right) {
+    if (left < right) {
+      var storeIndex = partition(arr, left, right);
+      console.log(arr, 'sort')
+      sort(arr, left, storeIndex - 1);
+      sort(arr, storeIndex + 1, right);
+    }
+  }
+
+  sort(arr, 0, arr.length - 1);
+  return arr;
+}
+var arr3 = [6, 7, 3, 4, 1, 5, 9, 2, 8];
+console.log(quickSortInPace(arr3))
