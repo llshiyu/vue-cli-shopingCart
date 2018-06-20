@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>实现vue双向数据绑定---第二步view→model的绑定.</title>
+</head>
+<body>
+<h1>当用户输入改变input的值(view层)时，反映到data中(model层)并改变对应的值</h1>
+<p>在complie编译的时候监听node，并改变data中的值为node.value;<br>
+  通知data中的数据改变（这里会用到访问器属性，即Object.defineProperty）
+  这里我们先完成第二个点，通知数据改变，在全局中新添加两个函数</p>
+<div id="app">
+  <input type="text" v-model="text">
+  {{text}}
+</div>
+<script>
+  var vm = new Vue({
+    el: 'app',
+    data: {
+      text: 'Hello world!',
+      asd: 'hello lee'
+    }
+  })
+
+  function Vue(options) {
+    this.data = options.data;
+    var id = options.el;
+    var data = this.data;
+    console.log('Vue data', data);
+    console.log('Vue this', this);
+    // 将data的属性全部通过访问器属性赋给vm对象，使 读写vm实例的属性 转成 读写了vm.data的属性值 ，达到鱼目混珠的效果
+    observe(data, this);
+    var dom = node2Fragment(document.getElementById(id), this);
+    document.getElementById(id).appendChild(dom);
+  }
+
+  function observe(obj, vm) {
+    console.log('observe', obj);
+    console.log('observe this', vm);
+    console.log(Object.keys(obj));
+    Object.keys(obj).forEach(function (key) {
+      console.log(key, obj[key]);
+      defineReactive(vm, key, obj[key]);
+    })
+  }
+
+  function defineReactive(obj, key, val) {
+    // http://imweb.io/topic/56d40adc0848801a4ba198ce
+    // Object.defineProperty为对象定义属性
+    // 参数:
+    //   object 必需。 要在其上添加或修改属性的对象。 这可能是一个本机 JavaScript对象（即用户定义的对象或内置对象）或 DOM 对象。
+    //   propertyname 必需。 一个包含属性名称的字符串。要定义或者更改的属性名字
+    //   descriptor 必需。 属性描述符。 它可以针对数据属性或访问器属性。
+    // 其中descriptor的参数值
+    // value(属性的值),writable(该属性是否可写),configurable,enumerable,get,set, 详情看上面网址
+    Object.defineProperty(obj, key, {
+      get: function () {
+        return val;
+      },
+      set: function (newVal) {
+        if (newVal === val) return;
+        val = newVal;
+        //看到数据改变
+        console.log("设置新的属性为"+val)
+      }
+    })
+  }
+
+  function node2Fragment(node, vm) {
+    // 这里是dom劫持，vue会新建一个文档片段来替换dom中本来的节点
+    var flag = document.createDocumentFragment();
+    // 子节点
+    var child;
+    while (child = node.firstChild) {
+      // 开始编译每个节点
+      compile(child, vm);
+      // appendChild方法会自动删除node对象的child节点
+      flag.appendChild(child);
+    }
+    return flag;
+  }
+
+  function compile(node, vm) {
+    var reg = /\{\{(.*)\}\}/;
+    // 节点类型为元素
+    if (node.nodeType === 1) {
+      var attr = node.attributes;
+      for (var i = 0; i < attr.length; i++) {
+        if (attr[i].nodeName === 'v-model') {
+          var name = attr[i].nodeValue;
+          console.log(vm,2222222)
+          node.addEventListener('input', function (e) {
+            // 给对应的data属性赋值，并触发该属性的set函数
+            vm[name] = e.target.value;
+            console.log(vm,66666)
+          });
+          // 将data值赋给该node,注意这里本来是vm.data[name]
+          node.value = vm[name];
+        }
+      }
+    }
+    // 节点类型为text
+    if (node.nodeType === 3) {
+      if (reg.test(node.nodeValue)) {
+        var name = RegExp.$1;
+        name = name.trim();
+        // 将data的值赋给该node,注意这里本来是vm.data[name]
+        node.nodeValue = vm[name];
+      }
+    }
+  }
+</script>
+</body>
+</html>

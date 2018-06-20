@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>实现vue双向数据绑定---第一步model→view的初始化绑定.</title>
+</head>
+<body>
+<h1>让v-mode="text"和{{text}}绑定到的data中text的值。</h1>
+ <p>这里会有两个函数帮我们做事情，一个是node2Fragment函数，帮我们取到结点，<br>
+   一个是compile函数，操作我们取到的node结点的值去等于对应的data值，
+   这样就完成了model到view的第一次初始化绑定。</p>
+<div id="app">
+  <input type="text" v-model="text">
+  {{text}}
+</div>
+<script>
+  var vm = new Vue({
+    el: 'app',
+    data: {
+      text: 'Hello world!'
+    }
+  })
+
+  function Vue(options) {
+    this.data = options.data;
+    var id = options.el;
+    console.log('Vue this', this);
+    console.log('Vue options', options);
+    console.log('Vue id', id);
+    var dom = node2Fragment(document.getElementById(id), this);
+    console.log('Vue dom', dom);
+    document.getElementById(id).appendChild(dom);
+  }
+
+  function node2Fragment(node, vm) {
+    console.log('node2Fragment node', node);
+    console.log('node2Fragment vm', vm);
+    // 这里是dom劫持，vue会新建一个文档片段来替换dom中本来的节点
+    var flag = document.createDocumentFragment();
+    console.log('node2Fragment flag', flag);
+    // 子节点
+    var child;
+    console.log('node2Fragment node.firstChild', node.firstChild)
+    while (child = node.firstChild) {
+      // 开始编译每个节点
+      compile(child, vm);
+      // appendChild方法会自动删除node对象的child节点
+      flag.appendChild(child);
+    }
+    console.log('node2Fragment', flag, node)
+    return flag;
+  }
+
+  function compile(node, vm) {
+    var reg = /\{\{(.*)\}\}/;
+    console.log('compile node', node);
+    console.log('compile node.nodeType', node.nodeType);
+    console.log('compile vm', vm);
+    // 节点类型为元素
+    if (node.nodeType === 1) {
+      var attr = node.attributes;
+      console.log('compile attr', attr);
+      for (var i = 0; i < attr.length; i++) {
+        if (attr[i].nodeName === 'v-model') {
+          var name = attr[i].nodeValue;
+          node.value = vm.data[name];
+        }
+      }
+      console.log('compile node.value', node.value, 11111);
+      console.log('compile vm.data', vm.data, 11111);
+    }
+    // 节点类型为text
+    if (node.nodeType === 3) {
+      console.log('compile node.nodeValue', node.nodeValue, 11111);
+      if (reg.test(node.nodeValue)) {
+        console.log(reg.test(node.nodeValue), name, RegExp);
+        // RegExp 是javascript中的一个内置对象。为正则表达式
+        // RegExp.$1是RegExp的一个属性,指的是与正则表达式匹配的第一个 子匹配(以括号为标志)字符串，
+        // 以此类推，RegExp.$2，RegExp.$3，..RegExp.$9总共可以有9个匹配，最多保留前9个
+        var name = RegExp.$1;
+        node.nodeValue = vm.data[name];
+      }
+    }
+  }
+</script>
+</body>
+</html>

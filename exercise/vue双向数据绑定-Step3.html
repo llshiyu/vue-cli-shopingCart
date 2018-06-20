@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>实现vue双向数据绑定---第三步model→view的绑定</title>
+</head>
+<body>
+<p>第一次绑定是初始化绑定，我们现在要完成的是，<br>
+  当用户改变data值，再回过头去改变view层，这里刚好可以用到一个设计模式： <br>
+  观察者模式-让多个观察者同时监听某一个主题对象，这个主题对象的状态发生改变时就会通知所有观察者对象。</p>
+<div id="app">
+  <input type="text" v-model="text">
+  {{text}}
+</div>
+<img src="img.png" alt="">
+<script>
+  function Watcher(vm, node, name) {
+    // Dep.target是一个Dep的静态属性,表示当前观察者。
+    console.log('watcher this', this, Dep)
+    Dep.target = this;
+    console.log('Dep.target', Dep.target)
+    this.name = name;
+    this.node = node;
+    this.vm = vm;
+    // 订阅者执行一次更新视图
+    this.update();
+    Dep.target = null;
+  }
+
+  Watcher.prototype = {
+    update: function () {
+      console.log(this)
+      //触发对应data属性值的get函数
+      this.get();
+      this.node.nodeValue = this.value;
+    },
+    get: function () {
+      this.value = this.vm[this.name]
+    }
+  }
+
+  function Dep() {
+    //主题的订阅者们
+    this.subs = [];
+  }
+
+  Dep.prototype = {
+    //添加订阅者的方法
+    addSub: function (sub) {
+      console.log('this.subs', this, this.subs)
+      console.log('addSub', sub)
+      this.subs.push(sub);
+    },
+    //发布信息的方法（让订阅者们全部更新view）
+    notify: function () {
+      this.subs.forEach(function (sub) {
+        console.log('notify',sub)
+        sub.update();
+      })
+    }
+  }
+
+  var vm = new Vue({
+    el: 'app',
+    data: {
+      text: 'Hello world!',
+      asd: 'hello lee'
+    }
+  })
+
+  function Vue(options) {
+    this.data = options.data;
+    var id = options.el;
+    var data = this.data;
+    // 将data的属性全部通过访问器属性赋给vm对象，使 读写vm实例的属性 转成 读写了vm.data的属性值 ，达到鱼目混珠的效果
+    observe(data, this);
+    var dom = node2Fragment(document.getElementById(id), this);
+    document.getElementById(id).appendChild(dom);
+  }
+
+  function observe(obj, vm) {
+    Object.keys(obj).forEach(function (key) {
+      defineReactive(vm, key, obj[key]);
+    })
+  }
+
+  function defineReactive(obj, key, val) {
+    //定义一个主题
+    var dep = new Dep();
+    Object.defineProperty(obj, key, {
+      get: function () {
+        //添加订阅者watcher到主题对象Dep
+        if (Dep.target) dep.addSub(Dep.target)
+        return val;
+      },
+      set: function (newVal) {
+        if (newVal === val) return;
+        val = newVal;
+        //作为发布者发出通知（更新所有订阅了这个属性的view）
+        dep.notify();
+      }
+    })
+  }
+
+  function node2Fragment(node, vm) {
+    // 这里是dom劫持，vue会新建一个文档片段来替换dom中本来的节点
+    var flag = document.createDocumentFragment();
+    // 子节点
+    var child;
+    while (child = node.firstChild) {
+      // 开始编译每个节点
+      compile(child, vm);
+      // appendChild方法会自动删除node对象的child节点
+      flag.appendChild(child);
+    }
+    return flag;
+  }
+
+  function compile(node, vm) {
+    var reg = /\{\{(.*)\}\}/;
+    // 节点类型为元素
+    if (node.nodeType === 1) {
+      var attr = node.attributes;
+      for (var i = 0; i < attr.length; i++) {
+        if (attr[i].nodeName === 'v-model') {
+          var name = attr[i].nodeValue;
+          node.addEventListener('input', function (e) {
+            // 给对应的data属性赋值，并触发该属性的set函数
+            vm[name] = e.target.value;
+          });
+          // 将data值赋给该node,注意这里本来是vm.data[name]
+          node.value = vm[name];
+        }
+      }
+    }
+    // 节点类型为text
+    if (node.nodeType === 3) {
+      if (reg.test(node.nodeValue)) {
+        var name = RegExp.$1;
+        name = name.trim();
+        // 初始化数据，并给响应的data属性添加观察者
+        // 这个对象的作用就是初始化数据(step1做的工作)，以及触发get函数,添加这个node到观察者
+        new Watcher(vm, node, name);
+      }
+    }
+  }
+
+</script>
+</body>
+</html>
