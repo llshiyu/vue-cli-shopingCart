@@ -18,6 +18,7 @@
     this.vm = vm;
     this.node = node;
     this.update();
+    console.log('DEP',Dep.target)
     Dep.target = null;
   }
 

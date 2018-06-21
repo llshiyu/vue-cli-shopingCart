@@ -57,7 +57,7 @@
 
 <script>
 import searchData from '../data/searchData.json'
-import {deepCopy, addClass, removeClass} from "../assets/js/util"
+// import {deepCopy, addClass, removeClass} from "../assets/js/util"
 export default {
   name: 'search',
   computed: {},
@@ -84,33 +84,61 @@ export default {
     console.log('mounted searchList', this.searchList, this.orderList)
   },
   methods: {
+    deepCopy (source) {
+      var result = {}
+      for (var key in source) {
+        result[key] = typeof source[key] === 'object' ? this.deepCopy(source[key]) : source[key]
+      }
+
+      return result
+    },
+    hasClass (elem, cls) {
+      cls = cls || ''
+      // 当cls没有参数时，返回false
+      if (cls.replace(/\s/g, '').length === 0) return false
+      return new RegExp(' ' + cls + ' ').test(' ' + elem.className + ' ')
+    },
+    removeClass (ele, cls) {
+      if (this.hasClass(ele, cls)) {
+        var newClass = ' ' + ele.className.replace(/[\t\r\n]/g, '') + ' '
+        while (newClass.indexOf(' ' + cls + ' ') >= 0) {
+          newClass = newClass.replace(' ' + cls + ' ', ' ')
+        }
+        ele.className = newClass.replace(/^\s+|\s+$/g, '')
+      }
+    },
+    addClass (ele, cls) {
+      if (!this.hasClass(ele, cls)) {
+        ele.className = ele.className === '' ? cls : ele.className + ' ' + cls
+      }
+    },
     isNeedShowAll (fieldName) {
       let fieldWrap, fieldWrapHeight
       this.showAll[fieldName] = {}
       setTimeout(() => {
         fieldWrap = document.getElementById(fieldName)
         fieldWrapHeight = fieldWrap.clientHeight
-        if(fieldWrapHeight > this.FILTER_WRAP_DEFAULT_HEIGHT){
+        if (fieldWrapHeight > this.FILTER_WRAP_DEFAULT_HEIGHT) {
           this.showAll[fieldName].needShow = true
           this.showAll[fieldName].isShowAll = false
           this.$forceUpdate()
-          addClass(fieldWrap, 'over-height-hidden')
+          this.addClass(fieldWrap, 'over-height-hidden')
         }
-      }, 10);
+      }, 10)
     }, // 是否需要显示 更多 展开
     clickMore (fieldName) {
       let filedWrap = document.getElementById(fieldName)
       if (this.showAll[fieldName].isShowAll) {
         this.showAll[fieldName].isShowAll = false
-        addClass(filedWrap, 'over-height-hidden')
+        this.addClass(filedWrap, 'over-height-hidden')
       } else {
         this.showAll[fieldName].isShowAll = true
-        removeClass(filedWrap, 'over-height-hidden')
+        this.removeClass(filedWrap, 'over-height-hidden')
       }
       this.$forceUpdate()
     }, // 展开、收起
     getOrderList () {
-      this.orderList = deepCopy(searchData.order) // 深拷贝  浅拷贝 B变A也变  深拷贝 B变A不变
+      this.orderList = this.deepCopy(searchData.order) // 深拷贝  浅拷贝 B变A也变  深拷贝 B变A不变
       // order.rank  1降序desc 2升序asc
     }, // 获取排序列表
     addSearchFilter (filterName, value) {
