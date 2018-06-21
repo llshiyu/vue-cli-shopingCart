@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>实现vue双向数据绑定--v-model</title>
+</head>
+<body>
+<div id="app">
+  <input type="text" v-model="text"/>
+  {{text}}
+</div>
+</body>
+<script>
+  function Watcher(vm, node, name) {
+    Dep.target = this;
+    this.name = name;
+    this.vm = vm;
+    this.node = node;
+    this.update();
+    Dep.target = null;
+  }
+
+  Watcher.prototype = {
+    update: function () {
+      this.get();
+      this.node.nodeValue = this.value;
+    },
+    get: function () {
+      this.value = this.vm[this.name];
+    }
+  };
+
+  function Dep() {
+    this.subs = [];
+  }
+
+  Dep.prototype = {
+    addSub: function (sub) {
+      this.subs.push(sub)
+    },
+    notify: function () {
+      this.subs.forEach(function (sub) {
+        sub.update();
+      })
+    }
+  };
+
+  new Vue({
+    el: 'app',
+    data: {
+      text: 'hello',
+      asd: 'lee'
+    }
+  });
+
+  function Vue(options) {
+    this.data = options.data;
+    let id = options.el;
+    let data = options.data;
+    let node = document.getElementById(id);
+    observe(data, this);
+    let dom = node2Fragment(node, this);
+    document.getElementById(id).appendChild(dom);
+  }
+
+  function observe(obj, vm) {
+    Object.keys(obj).forEach(function (key) {
+      defineReactive(vm, key, obj[key])
+    })
+  }
+
+  function defineReactive(vm, key, value) {
+    let dep = new Dep();
+    console.log('dep', dep, Dep);
+    Object.defineProperty(vm, key, {
+      get: function () {
+        if (Dep.target) {
+          dep.addSub(Dep.target);
+        }
+        return value;
+      },
+      set: function (newValue) {
+        if (value === newValue) return;
+        value = newValue;
+        console.log('new',value)
+        dep.notify();
+      }
+    })
+  }
+
+  function node2Fragment(node, vm) {
+    let flag = document.createDocumentFragment();
+    let child;
+    while (child = node.firstChild) {
+      compile(child, vm);
+      flag.appendChild(child);
+    }
+    return flag;
+  }
+
+  function compile(node, vm) {
+    let nodeType = node.nodeType;
+    let reg = /\{\{(.*)\}\}/;
+    if (nodeType === 1) {
+      let attr = node.attributes;
+      for (let i = 0, len = attr.length; i < len; i++) {
+        if (attr[i].nodeName === 'v-model') {
+          let name = attr[i].nodeValue;
+          console.log(name, vm, vm[name]);
+          node.addEventListener('input', function (e) {
+            vm[name] = e.target.value;
+          });
+          node.value = vm[name];
+        }
+      }
+    }
+    if (nodeType === 3) {
+      if (reg.test(node.nodeValue)) {
+        let name = RegExp.$1;
+        name = name.trim();
+        node.nodeValue = vm[name];
+        new Watcher(vm, node, name);
+      }
+    }
+  }
+</script>
+</html>
