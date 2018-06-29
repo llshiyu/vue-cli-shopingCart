@@ -4,7 +4,7 @@
     <h2>{{author}}</h2>
     <Search></Search>
     <TodoList></TodoList>
-    <router-link to="/UsePullRefresh">go</router-link>
+    <router-link to="/UsePullRefresh">go11</router-link>
   </div>
 </template>
 
