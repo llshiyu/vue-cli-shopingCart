@@ -1,5 +1,5 @@
 <template>
-  <div class="soduku" v-if="isShow">
+  <div class="soduku" >
     <ul class="grid-box">
       <li v-for="(liX,liI) in 9" :key="liI">
         <span v-for="(spanX,spanI) in 9" :key="spanI" :id="liI+'-'+spanI">{{boxVal[liI][spanI]}}</span>
@@ -124,7 +124,12 @@
       isCorret(arr, row, col, num) {
         // return (this.checkRow(arr, row,num) && this.checkLine(arr, col,num) && this.checkNine(arr, row, col,num));
         // return (this.checkRow(arr, row, num) && this.checkLine(arr, col, num))
-        return (this.checkNine(arr, row, col, num))
+        // return (this.checkNine(arr, row, col, num))
+        let rows = this.checkRow(arr, row, num) // 行
+        let line = this.checkLine(arr, col, num) // 列
+        let nine = this.checkNine(arr, row, col, num) // 方块
+        console.log('rows', rows, 'line', line, 'nine', nine)
+        return nine
       }, // 是否满足行、列和3X3区域不重复的要求
     }
   }
