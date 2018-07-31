@@ -24,6 +24,16 @@ export default new Router({
       path: '/UsePullRefresh',
       name: 'UsePullRefresh',
       component: UsePullRefresh
-    }
+    },
+    {
+      path:'/Video',
+      name:'Video',
+      component: resolve => require(['@/components/Video'], resolve)
+    },
+    {
+      path:'/Soduku',
+      name:'Soduku',
+      component: resolve => require(['@/components/Soduku'], resolve)
+    } // 数独
   ]
 })

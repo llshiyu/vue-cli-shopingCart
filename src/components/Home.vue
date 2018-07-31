@@ -1,5 +1,7 @@
 <template>
   <div class="hello">
+    <router-link to="/Soduku">玩数独</router-link>
+    <router-link to="/Video">go video</router-link>
     <h1>{{ msg }}</h1>
     <h2>{{author}}</h2>
     <Search></Search>
