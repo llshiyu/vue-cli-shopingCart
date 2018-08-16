@@ -83,6 +83,9 @@ export default {
     init () {
       // console.log('一进页面就加载的函数，输出shopList', this.shopList)
       this.cartData = cartData
+      this.$http.get('static/cartData.json').then((res)=>{
+        console.log(res,999)
+      })
       this.maxTotalNumber = this.cartData.result.list.length
       this.totalMoney = this.cartData.result.totalMoney
       this.showPage(this.thisPage, this.pageShowTotal)

@@ -34,6 +34,11 @@ export default new Router({
       path:'/Soduku',
       name:'Soduku',
       component: resolve => require(['@/components/Soduku'], resolve)
+    }, // 数独
+    {
+      path:'/h5camera',
+      name:'h5camera',
+      component: resolve => require(['@/components/h5camera/index'], resolve)
     } // 数独
   ]
 })

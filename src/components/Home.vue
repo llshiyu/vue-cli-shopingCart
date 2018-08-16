@@ -1,5 +1,6 @@
 <template>
   <div class="hello">
+    <router-link to="/h5camera">调用移动端拍照以及打开相册裁剪功能</router-link>
     <router-link to="/Soduku">玩数独</router-link>
     <router-link to="/Video">go video</router-link>
     <h1>{{ msg }}</h1>
