@@ -1,5 +1,8 @@
 <template>
   <div class="hello">
+    <img src="../assets/img/logo.png">
+    <router-link to="/Login">去登录</router-link>
+    <br>
     <router-link to="/h5camera">调用移动端拍照以及打开相册裁剪功能</router-link>
     <router-link to="/Soduku">玩数独</router-link>
     <router-link to="/Video">go video</router-link>

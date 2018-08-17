@@ -26,7 +26,7 @@
     methods:{
       clipImg(event){
         this.clip = new clip('container',this);
-        console.log(event.target.files[0],document.body.clientWidth,document.body.clientWidth)
+        console.log(event.target.files)
         this.clip.init(event.target.files[0],document.body.clientWidth,document.body.clientWidth);
         this.isClip = true;
         document.body.addEventListener('touchmove',this.noScoll,false);
