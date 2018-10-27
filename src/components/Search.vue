@@ -93,10 +93,10 @@ export default {
         if(fieldWrapHeight > this.FILTER_WRAP_DEFAULT_HEIGHT){
           this.showAll[fieldName].needShow = true
           this.showAll[fieldName].isShowAll = false
-          this.$forceUpdate()
+          this.$forceUpdate();
           addClass(fieldWrap, 'over-height-hidden')
         }
-      }, 10);
+      }, 10)
     }, // 是否需要显示 更多 展开
     clickMore (fieldName) {
       let filedWrap = document.getElementById(fieldName)

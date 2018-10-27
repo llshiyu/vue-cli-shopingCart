@@ -1,4 +1,4 @@
-// 全局数据
+//  全局数据
 export function GData (GKey, GValue) {
   if (GValue !== undefined) {
     window[GKey] = GValue
@@ -14,7 +14,7 @@ export function sessionData (key, value) {
   } else {
     let value = sessionStorage.getItem(key)
     value = JSON.parse(value)
-    // sessionStorage.removeItem(key)
+    //  sessionStorage.removeItem(key)
     return value
   }
 }
@@ -86,7 +86,7 @@ export function closeWindow () {
   var params = {
     "functionType": 1
   }
-  window.location.href = "toon://mwap/window?params=" + JSON.stringify(params)
+  window.location.href = "toon:// mwap/window?params=" + JSON.stringify(params)
 }
 
 /**
@@ -98,7 +98,7 @@ export function droploadUpOnScroll (callback, ele, scrollEle) {
     window.onscroll = false
     return false
   }
-  // 默认距离底部差值开始刷新列表
+  //  默认距离底部差值开始刷新列表
   var heightDifference = 0
   if (typeof ele === 'number') {
     heightDifference = ele
@@ -111,19 +111,19 @@ export function droploadUpOnScroll (callback, ele, scrollEle) {
       document.body.appendChild(droploadDOM)
     }
   }
-  var MAM = document.getElementById(ele) // 绑定元素
+  var MAM = document.getElementById(ele) //  绑定元素
 
-  var gap = parseInt(MAM.getAttribute("data-gap")) || heightDifference // 获取差值
+  var gap = parseInt(MAM.getAttribute("data-gap")) || heightDifference //  获取差值
   if (!scrollEle) {
     var winHeight = window.innerHeight
     var mTop, sTop, result
     window.onscroll = function () {
 
       mTop = MAM.offsetTop
-      sTop = document.body.scrollTop  //滚动条距离顶部
+      sTop = document.body.scrollTop  // 滚动条距离顶部
       result = mTop - sTop
       if (result <= (winHeight + gap)) {
-        callback()  //回调
+        callback()  // 回调
       }
     }
   } else {
@@ -132,10 +132,10 @@ export function droploadUpOnScroll (callback, ele, scrollEle) {
     let mTop, sTop, result
     scrollContainer.onscroll = function () {
       mTop = MAM.offsetTop
-      sTop = scrollContainer.scrollTop  //滚动条距离顶部
+      sTop = scrollContainer.scrollTop  // 滚动条距离顶部
       result = mTop - sTop
       if (result <= (winHeight + gap)) {
-        callback()  //回调
+        callback()  // 回调
       }
     }
   }
@@ -175,12 +175,12 @@ export function pullUpOnScroll (id, callback, scrollBottomH) {
  */
 export function confirm (param) {
   var componentsAlert = document.getElementById("componentsAlert") || false
-  //if(!param ){componentsAlert.style={display : "none"}}
+  // if(!param ){componentsAlert.style={display : "none"}}
   if (!param && componentsAlert.parentNode) {
     componentsAlert.parentNode.removeChild(componentsAlert)
   }
   var param = param || {}
-  param.show = param.show || true //默认显示
+  param.show = param.show || true // 默认显示
   param.title = param.title || ""
   param.message = param.message || "可能是网络环境不稳定引起的系统异常，请新打开页面后重试！"
   param.btnEsc = param.btnEsc === '' ? '' : param.btnEsc || "取消"
@@ -225,7 +225,7 @@ export function confirm (param) {
     alertDiv.innerHTML = style + html
     document.body.appendChild(alertDiv)
     componentsAlert = document.getElementById("componentsAlert")
-    //绑定事件
+    // 绑定事件
     document.getElementById("AlertBtnEsc").addEventListener('click', function () {
       param.btnEscFun()
       componentsAlert.style.display = "none"
@@ -265,33 +265,33 @@ export function zeroFill (num) {
  * @return {[type]}      [description]
  */
 export function dateStr (date) {
-  //获取js 时间戳
+  //  获取js 时间戳
   var time = new Date().getTime()
   var _data = new Date(parseInt(date))
-  //去掉 js 时间戳后三位，与php 时间戳保持一致
+  //  去掉 js 时间戳后三位，与php 时间戳保持一致
   time = parseInt((time - date) / 1000)
 
-  //存储转换值
+  // 存储转换值
   var s
-  if (time < 60 * 1) {//1分钟内
+  if (time < 60 * 1) {// 1分钟内
     return '刚刚'
   } else if ((time < 60 * 60) && (time >= 60 * 1)) {
-    //超过十分钟少于1小时
+    // 超过十分钟少于1小时
     s = Math.floor(time / 60)
     return s + "分钟前"
   } else if ((time < 60 * 60 * 24) && (time >= 60 * 60)) {
-    //判断是否为昨天
-    //下个月
+    // 判断是否为昨天
+    // 下个月
     if (_data.getMonth() < (new Date().getMonth())) {
       return "昨天 "
     } else if (_data.getDate() < (new Date().getDate())) {
       return "昨天 "
     }
-    //超过1小时少于24小时
+    // 超过1小时少于24小时
     s = Math.floor(time / 60 / 60)
     return s + "小时前"
   } else if ((time < 60 * 60 * 24 * 2) && (time >= 60 * 60 * 24)) {
-    //昨天
+    // 昨天
     return "昨天 "
   } else {
     return false
@@ -308,13 +308,13 @@ export function dateFormat (timestamp, fmt) {
 
   var _data = new Date(parseInt(timestamp))
   var o = {
-    'M+': _data.getMonth() + 1, // 月份
-    'd+': _data.getDate(), // 日
-    'h+': _data.getHours(), // 小时
-    'm+': _data.getMinutes(), // 分
-    's+': _data.getSeconds(), // 秒
-    'q+': Math.floor((_data.getMonth() + 3) / 3), // 季度
-    'S': _data.getMilliseconds() // 毫秒
+    'M+': _data.getMonth() + 1, //  月份
+    'd+': _data.getDate(), //  日
+    'h+': _data.getHours(), //  小时
+    'm+': _data.getMinutes(), //  分
+    's+': _data.getSeconds(), //  秒
+    'q+': Math.floor((_data.getMonth() + 3) / 3), //  季度
+    'S': _data.getMilliseconds() //  毫秒
   }
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (_data.getFullYear() + '').substr(4 - RegExp.$1.length))
@@ -356,7 +356,7 @@ export function timestampChangeDate (timestamp, type) {
 
 export function hasClass (elem, cls) {
   cls = cls || ''
-  if (cls.replace(/\s/g, '').length === 0) return false //当cls没有参数时，返回false
+  if (cls.replace(/\s/g, '').length === 0) return false // 当cls没有参数时，返回false
   return new RegExp(' ' + cls + ' ').test(' ' + elem.className + ' ')
 }
 
@@ -387,7 +387,7 @@ export function convSpecialChar (str) {
  */
 export function buryData (buryName,data) {
   let param = {
-    toon_type: "102"  //北京通
+    toon_type: "102"  // 北京通
   }
   if (/toontype/.test( navigator.userAgent.toLowerCase() )){
     var str = JSON.stringify(navigator.userAgent.toLowerCase())
@@ -399,17 +399,17 @@ export function buryData (buryName,data) {
       param[key]=data[key]
     }
   }
-// 这里需要判断是在 App 里还是在普通的浏览器里，例如可以根据 UserAgent 或者 Cookie 来判断
+//  这里需要判断是在 App 里还是在普通的浏览器里，例如可以根据 UserAgent 或者 Cookie 来判断
   if (/toon/.test( navigator.userAgent.toLowerCase() )) {
-    // 获取用户信息
+    //  获取用户信息
       sa.getAppStatus((app_info) =>{
         sa.identify(app_info.distinct_id)
-              //埋点
+              // 埋点
         sa.quick('autoTrack')
         sa.track(buryName, param)
     })
   } else {
-    //埋点
+    // 埋点
     sa.quick('autoTrack')
     sa.track(buryName, param)
   }
@@ -422,16 +422,16 @@ export function buryData (buryName,data) {
  * @param trend 变更趋势：'up' or 'down'
  */
 export function changeRank (dataArr, index, trend) {
-  // 默认值
+  //  默认值
   dataArr = dataArr || []
   index = parseInt(index)
   trend = trend || 'down'
 
-  // 输入非法数据
+  //  输入非法数据
   if (!dataArr.length || index < 0 || index >= dataArr.length) {
     return false
   }
-  // 非法操作
+  //  非法操作
   if (index === 0 && trend === 'up' || index === dataArr.length - 1 && trend === 'down') {
     return false
   }
@@ -460,7 +460,7 @@ export function changeRank (dataArr, index, trend) {
   return retData
 }
 
-// 激活左侧菜单
+//  激活左侧菜单
 export function activeLeftMenu (title) {
 
   let menuNodes
@@ -474,7 +474,7 @@ export function activeLeftMenu (title) {
   }, 0)
 }
 
-// 过滤html标签（保留指定标签）
+//  过滤html标签（保留指定标签）
 export function filterHtmlTags (htm) {
 
   if (!htm) {
@@ -488,7 +488,7 @@ export function filterHtmlTags (htm) {
   return htm
 }
 
-// 拷贝到剪贴板
+//  拷贝到剪贴板
 export function clipboard (text) {
   if (!text) {
     return false
@@ -589,7 +589,7 @@ export function getUserInfo (fieldName) {
   return userInfo
 }
 
-// 判断当前是否登录状态
+//  判断当前是否登录状态
 export function isLogged () {
   if (!getUserInfo() || !getUserInfo('userId')) {
     return false
@@ -597,12 +597,12 @@ export function isLogged () {
   return true
 }
 
-// 版权信息
+//  版权信息
 export function getCopyright () {
   return `Copyright © 1999-${new Date().getFullYear()} 北京市移动公共服务平台   All Rights Reserved 京ICP备12037412号 - 1`
 }
 
-// 更新个人中心数据个数
+//  更新个人中心数据个数
 export function setManCount (datas) {
   let applyData = document.getElementById('applyData'),
       examineData = document.getElementById('examineData'),
@@ -612,7 +612,7 @@ export function setManCount (datas) {
   collectData.innerText = datas.houseNum
 }
 
-// 获取组织平台返回的用户信息
+//  获取组织平台返回的用户信息
 export function getLoggedUser () {
   if (!window.location.search) {
     return false
@@ -628,13 +628,13 @@ export function getLoggedUser () {
     tmpArr = item.split('=')
     userInfo[tmpArr[0]] = tmpArr[1]
 
-    // 兼容原测试数据与传入数据字段
+    //  兼容原测试数据与传入数据字段
     if (fieldMap[tmpArr[0]]) {
       userInfo[fieldMap[tmpArr[0]]] = tmpArr[1]
     }
   }
 
-  // 记入session
+  //  记入session
   sessionStorage.setItem('loggedUser', JSON.stringify(userInfo))
   location.replace(location.href.replace(location.search, ''))
 }
@@ -668,7 +668,7 @@ export function scroll2Top () {
  */
 export function changeUrlPath (url) {
 
-  // 去掉开头的/
+  //  去掉开头的/
   url = url[0] === '/' ? url.substr(1) : url
 
   let urlArr = url.split('/'),
@@ -769,13 +769,13 @@ function quickSortInPace(arr) {
    */
   function partition(arr, left, right) {
     var pivot = arr[left], storeIndex = left;
-    // 第一个不动，后面的和第一个比，小的往前放，大的往后放，pivotIndex记录小的和大的的分界点
+    //  第一个不动，后面的和第一个比，小的往前放，大的往后放，pivotIndex记录小的和大的的分界点
     for (var i = left + 1; i <= right; i++) {
       if (arr[i] < pivot) {
         swap(arr, i, ++storeIndex);
       }
     }
-    // 第一个和分界点交换
+    //  第一个和分界点交换
     swap(arr, left, storeIndex);
     return storeIndex;
   }
