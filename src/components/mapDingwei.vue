@@ -88,10 +88,27 @@
         })
       },
       toonDingwei(){
-        console.log(toongine)
+        console.log(toongine.location)
         toongine.location.getLocation({
           callback: res => {
-            alert("res: " + res.data);
+            console.log("res: " + res.data);
+            //{
+          //   "latitude" : 80,    //纬度，浮点数，范围为-90~90，负数表示南纬
+          //     "longitude" : 80,   //经度，浮点数，范围为-180~180，负数表示西经
+          //     "accuracy" : 2,     //位置的精确度
+          //     "province" : '北京', //所在省份
+          //     "city" : '北京',     //所在城市
+          //     "name" : '',        //位置名
+          //     "address" : ''      //地址的详细说明
+          // }
+            this.chosePosition.lat = res.data.latitude
+            this.chosePosition.lng = res.data.longitude
+
+            this.positionPicker()
+            // O: 39.99643
+            // P: 116.45801
+            // lat: 39.99643
+            // lng: 116.45801
           }
         })
       },
