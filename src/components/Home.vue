@@ -1,5 +1,8 @@
 <template>
   <div class="hello">
+    <router-link to="/map">map</router-link>
+    <router-link to="/mapDingwei">map</router-link>
+
     <h1>{{ msg }}</h1>
     <h2>{{author}}</h2>
     <Search></Search>

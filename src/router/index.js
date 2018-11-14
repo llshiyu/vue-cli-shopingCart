@@ -15,6 +15,16 @@ export default new Router({
       component: Home
     },
     {
+      path: '/map',
+      name: 'map',
+      component: resolve => require(['@/components/map'], resolve)
+    },
+    {
+      path: '/mapDingwei',
+      name: 'mapDingwei',
+      component: resolve => require(['@/components/mapDingwei'], resolve)
+    },
+    {
       path: '/Order/:id',
       name: 'Order',
       component: resolve => require(['@/components/Order'], resolve)
