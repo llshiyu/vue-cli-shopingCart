@@ -710,8 +710,8 @@ function instertionSort(arr) {
   }
   return arr;
 }
-var arr1 = [1, 4, 2]
-console.log(instertionSort(arr1))
+// var arr1 = [1, 4, 2]
+// console.log(instertionSort(arr1))
 
 /***
  * 快速排序
@@ -740,8 +740,8 @@ function quickSort(arr) {
   console.log('left', left, 'right', right)
   return quickSort(left).concat(pivot, quickSort(right))
 }
-var arr2 = [2, 6, 34, 12, 43, 121, 65, 4, 0]
-console.log(quickSort(arr2))
+// var arr2 = [2, 6, 34, 12, 43, 121, 65, 4, 0]
+// console.log(quickSort(arr2))
 
 /***
  * 利用下标进行快排
@@ -792,5 +792,5 @@ function quickSortInPace(arr) {
   sort(arr, 0, arr.length - 1);
   return arr;
 }
-var arr3 = [6, 7, 3, 4, 1, 5, 9, 2, 8];
-console.log(quickSortInPace(arr3))
+// var arr3 = [6, 7, 3, 4, 1, 5, 9, 2, 8];
+// console.log(quickSortInPace(arr3))

@@ -15,6 +15,11 @@ export default new Router({
       component: Home
     },
     {
+      path: '/monacoIndex',
+      name: 'monacoIndex',
+      component: resolve => require(['@/components/monaco-editor/index'], resolve)
+    }, // monaco-editor 代码编辑器
+    {
       path: '/map',
       name: 'map',
       component: resolve => require(['@/components/map'], resolve)
