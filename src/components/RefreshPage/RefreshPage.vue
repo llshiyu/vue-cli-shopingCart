@@ -84,10 +84,10 @@
         left: 20%;
       }
       .up-tip:before {
-        background: url(./img/down-logo.png) no-repeat center;
+        background: url(img/down-logo.png) no-repeat center;
       }
       .refresh-tip:before {
-        background: url(./img/refresh-logo.gif) no-repeat center;
+        background: url(img/refresh-logo.gif) no-repeat center;
       }
     }
   }

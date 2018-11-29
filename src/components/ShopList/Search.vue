@@ -56,8 +56,8 @@
 </template>
 
 <script>
-import searchData from '../data/searchData.json'
-import {deepCopy, addClass, removeClass} from "../assets/js/util"
+import searchData from '../../data/searchData.json'
+import {deepCopy, addClass, removeClass} from "../../assets/js/util"
 export default {
   name: 'search',
   computed: {},
@@ -363,14 +363,14 @@ export default {
       overflow: hidden;
     }
     .arrow-desc {
-      background-image: url('../assets/img/arrow-desc.png');
+      background-image: url('../../assets/img/arrow-desc.png');
       background-size: 100%;
       width: 5px;
       height: 14px;
       display: inline-block;
     }
     .arrow-asc {
-      background-image: url('../assets/img/arrow-asc.png');
+      background-image: url('../../assets/img/arrow-asc.png');
       background-size: 100%;
       width: 5px;
       height: 14px;
@@ -380,10 +380,10 @@ export default {
       background-color: #3F94FC;
       color: #fff !important;
       .arrow-asc {
-        background-image: url('../assets/img/arrow-asc-white.png');
+        background-image: url('../../assets/img/arrow-asc-white.png');
       }
       .arrow-desc {
-        background-image: url('../assets/img/arrow-desc-white.png');
+        background-image: url('../../assets/img/arrow-desc-white.png');
       }
     }
   }

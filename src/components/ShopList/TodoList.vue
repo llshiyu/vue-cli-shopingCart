@@ -42,7 +42,7 @@ import Tfooter from './Tfooter'
 import PopUps from './PopUps'
 // import Paging from './Paging'
 import MyPaging from './MyPaging'
-import cartData from '../data/cartData.json'
+import cartData from '../../data/cartData.json'
 export default {
   props: [],
   name: 'TodoList',

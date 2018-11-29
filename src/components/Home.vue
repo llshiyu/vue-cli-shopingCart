@@ -1,20 +1,23 @@
 <template>
   <div class="hello" id="printContent">
-    <router-link to="/map">map</router-link>
-    <router-link to="/mapDingwei">map</router-link>
+    <router-link to="/sudoku">Sudoku</router-link>
+    <router-link to="/poker">Poker</router-link>
+    <router-link to="/map">Map</router-link>
+    <router-link to="/mapDingwei">MapDingwei</router-link>
+    <router-link to="/monacoIndex">MonacoEditor</router-link>
+    <router-link to="/usePullRefresh">UsePullRefresh</router-link>
 
     <h1>{{ msg }}</h1>
     <h2>{{author}}</h2>
     <Search></Search>
     <TodoList></TodoList>
-    <router-link to="/UsePullRefresh">go</router-link>
     <button @click="printHtml()" class="no-print">打印</button>
   </div>
 </template>
 
 <script>
-import TodoList from './TodoList'
-import Search from './Search'
+import TodoList from './ShopList/TodoList'
+import Search from './ShopList/Search'
 import '../assets/js/Print'
 export default {
   name: 'Home',

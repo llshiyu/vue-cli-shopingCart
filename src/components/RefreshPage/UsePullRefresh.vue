@@ -19,7 +19,7 @@
 </style>
 
 <script>
-import Vscroll from './RefreshPage/RefreshPage'
+import Vscroll from './RefreshPage'
 
 export default {
   name: 'UsePullRefresh',

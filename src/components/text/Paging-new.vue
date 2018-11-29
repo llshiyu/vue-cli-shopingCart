@@ -12,8 +12,8 @@
       <div class="page-size-box">
         <input type="number" value="selectShowNumber" v-model="selectShowNumber" min="pageShowTotal" max="50" step="10"
                class="page-input page-size" disabled>
-        <img src="./triangle.png" class="top-icon" @click="addShowNumber()">
-        <img src="./triangle.png" class="bottom-icon" @click="minusShowNumber()">
+        <img src="../RefreshPage/triangle.png" class="top-icon" @click="addShowNumber()">
+        <img src="../RefreshPage/triangle.png" class="bottom-icon" @click="minusShowNumber()">
       </div>
       <span class="select-text">条</span>
     </div>
@@ -248,7 +248,7 @@
         content: "";
         width: 10px;
         height: 5px;
-        background: url(./triangle.png) no-repeat center;
+        background: url(../RefreshPage/triangle.png) no-repeat center;
         position: absolute;
         right: 8px;
         top: 45%;

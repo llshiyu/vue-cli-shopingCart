@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 // import Order from '@/components/Order'
-import UsePullRefresh from '@/components/UsePullRefresh'
+import UsePullRefresh from '@/components/RefreshPage/UsePullRefresh'
 
 Vue.use(Router)
 
@@ -17,8 +17,18 @@ export default new Router({
     {
       path: '/monacoIndex',
       name: 'monacoIndex',
-      component: resolve => require(['@/components/monaco-editor/index'], resolve)
-    }, // monaco-editor 代码编辑器
+      component: resolve => require(['@/components/MonacoEditor/index'], resolve)
+    }, // MonacoEditor 代码编辑器
+    {
+      path: '/sudoku',
+      name: 'sudoku',
+      component: resolve => require(['@/components/Sudoku/index'], resolve)
+    }, // 数独
+    {
+      path: '/poker',
+      name: 'poker',
+      component: resolve => require(['@/components/Poker/index'], resolve)
+    }, // 翻盘找相同
     {
       path: '/map',
       name: 'map',
@@ -32,11 +42,11 @@ export default new Router({
     {
       path: '/Order/:id',
       name: 'Order',
-      component: resolve => require(['@/components/Order'], resolve)
+      component: resolve => require(['@/components/ShopList/Order'], resolve)
     },
     {
-      path: '/UsePullRefresh',
-      name: 'UsePullRefresh',
+      path: '/usePullRefresh',
+      name: 'usePullRefresh',
       component: UsePullRefresh
     }
   ]
