@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="hello" id="printContent">
     <router-link to="/map">map</router-link>
     <router-link to="/mapDingwei">map</router-link>
 
@@ -8,12 +8,14 @@
     <Search></Search>
     <TodoList></TodoList>
     <router-link to="/UsePullRefresh">go</router-link>
+    <button @click="printHtml()" class="no-print">打印</button>
   </div>
 </template>
 
 <script>
 import TodoList from './TodoList'
 import Search from './Search'
+import '../assets/js/Print'
 export default {
   name: 'Home',
   components: {
@@ -27,6 +29,20 @@ export default {
   computed: {
     author () {
       return this.$store.state.author
+    }
+  },
+  methods:{
+    printHtml(){
+      Print('#printContent', {
+        loadCSS:['/static/a.css'],
+        pageTitle:'',
+        onStart: function () {
+          console.log('onStart', new Date())
+        },
+        onEnd: function () {
+          console.log('onEnd', new Date())
+        }
+      })
     }
   }
 }
