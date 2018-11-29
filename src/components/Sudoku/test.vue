@@ -114,6 +114,9 @@
         _this.rowList = [];
         _this.showRowList = []; // 要展示的数
         _this.answerList = [];// 答案
+        _this.checkShow = false;
+        _this.emptyI = null;
+        _this.emptyJ = null;
 
         /************************生成棋盘************************/
         let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -191,6 +194,8 @@
       }, // 深拷贝
       showOptions(i, j) {
         this.checkShow = false;
+        this.emptyI = null;
+        this.emptyJ = null;
         if (this.isErr && (i !== this.errOption.x || j !== this.errOption.y)) {
           return
         } // 有错误时只能改出错的那个
