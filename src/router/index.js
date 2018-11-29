@@ -22,7 +22,7 @@ export default new Router({
     {
       path: '/sudoku',
       name: 'sudoku',
-      component: resolve => require(['@/components/Sudoku/index'], resolve)
+      component: resolve => require(['@/components/Sudoku/test'], resolve)
     }, // 数独
     {
       path: '/poker',
