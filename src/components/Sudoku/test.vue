@@ -14,7 +14,7 @@
       </el-option>
     </el-select>
     <el-button type="primary" @click="checkAnswer">交卷</el-button>
-    <div class="list" @mouseleave="hoverJ=''">
+    <div class="list" @mouseleave="hoverJ=''" :class="{'shake':isShake}">
       <div class="row clearfix" v-for="(item,i) in rowList" :key="i">
         <!-- empty 填空
             hover-j 鼠标所在列
@@ -66,6 +66,7 @@
         emptyJ: null, // 填空所在的列
         checkShow: false, //选答案
         isErr: false,
+        isShake: false, //错误的动画
         errOption: {
           x: null,
           y: null
@@ -234,6 +235,7 @@
         }; // 列有错的
         _this.checkShow = false;
         _this.isErr = false;
+        _this.isShake = false;
         _this.showRowList[row][col] = n;
 
         /************************判断对错************************/
@@ -245,6 +247,7 @@
 
         if (rowRepeat > -1 || colRepeat > -1) {
           _this.isErr = true;
+          _this.isShake = true;
           _this.errOption = {
             x: row,
             y: col
@@ -257,6 +260,13 @@
             x: colRepeat,
             y: col
           }; // 列有错的---列有和输入一样的数字
+        }
+
+        if(_this.isErr){
+          setTimeout(()=>{
+            _this.isShake = false;
+          },1000);
+          return
         }
 
         _this.$forceUpdate();
@@ -395,6 +405,53 @@
     }
     .show-answer {
       margin-top: 10px;
+    }
+
+
+    .shake {
+      animation: shake-opacity 500ms 1 ease-in-out;
+    }
+    @keyframes shake-opacity {
+      0% {
+        transform: translate(0px, 0px) rotate(0deg);
+        opacity: 0.6;
+      }
+      10% {
+        transform: translate(-2px, -1px) rotate(-0.5deg);
+        opacity: 0.5;
+      }
+      20% {
+        transform: translate(-4px, 4px) rotate(1.5deg);
+        opacity: 0.4;
+      }
+      30% {
+        transform: translate(-4px, -1px) rotate(-1.5deg);
+        opacity: 0.8;
+      }
+      40% {
+        transform: translate(-2px, -1px) rotate(-2.5deg);
+        opacity: 0.3;
+      }
+      50% {
+        transform: translate(-4px, 1px) rotate(-2.5deg);
+        opacity: 0.5;
+      }
+      60% {
+        transform: translate(-2px, 4px) rotate(0.5deg);
+        opacity: 0.1;
+      }
+      70% {
+        transform: translate(-3px, 1px) rotate(-0.5deg);
+        opacity: 0.4;
+      }
+      80% {
+        transform: translate(0px, 0px) rotate(-0.5deg);
+        opacity: 0.5;
+      }
+      90% {
+        transform: translate(2px, -1px) rotate(-2.5deg);
+        opacity: 0.8;
+      }
     }
   }
 </style>
