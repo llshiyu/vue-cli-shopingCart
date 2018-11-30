@@ -186,6 +186,7 @@
             randomDo();
           }
         }
+
         randomDo();
         return [randomIndex, randomIndexAfter]
       }, // 随机生成两个不一样的0-9随机数
@@ -236,62 +237,68 @@
         _this.showRowList[row][col] = n;
 
         /************************判断对错************************/
-        if (_this.answerList[row][col] !== n) {
+
+        let rowRepeat = _this.checkRow(n, row, col);
+        let colRepeat = _this.checkCol(n, row, col);
+
+        console.log(_this.answerList[row][col], rowRepeat, colRepeat)
+
+        if (rowRepeat > -1 || colRepeat > -1) {
           _this.isErr = true;
           _this.errOption = {
             x: row,
             y: col
-          };
+          };// 输入错
           _this.errRowOption = {
             x: row,
-            y: _this.checkRow(n, row)
-          }; // 行有错的
+            y: rowRepeat
+          }; // 行有错的---行有和输入一样的数字
           _this.errColOption = {
-            x: _this.checkCol(n, col),
+            x: colRepeat,
             y: col
-          }; // 列有错的
+          }; // 列有错的---列有和输入一样的数字
         }
 
         _this.$forceUpdate();
       }, // 填空
-      checkRow(n, row) {
+      checkRow(n, row, col) {
         let _this = this;
         for (let i = 0; i < _this.numLen; i++) {
-          if (_this.showRowList[row][i] === n) {
+          if (_this.showRowList[row][i] === n && col !== i) {
             return i;
           }
         }
         return -1;
       }, // 检查每行中和输入的值一样的，返回列坐标
-      checkCol(n, col) {
+      checkCol(n, row, col) {
         let _this = this;
         for (let i = 0; i < _this.numLen; i++) {
-          if (_this.showRowList[i][col] === n) {
+          if (_this.showRowList[i][col] === n && row !== i) {
             return i;
           }
         }
         return -1;
       },// 检查每列中和输入的值一样的，返回行坐标
-      checkAnswer(){
+      checkAnswer() {
         let _this = this;
         let t = 0;
-        for(let i=0;i<_this.numLen;i++){
-          for(let j=0;j<_this.numLen;j++){
-            if(_this.showRowList[i][j]===''){
+        for (let i = 0; i < _this.numLen; i++) {
+          for (let j = 0; j < _this.numLen; j++) {
+            if (_this.showRowList[i][j] === '') {
               t++;
             }
           }
         }
-        if(t){
-          _this.$message.error('还差'+t+'个没有回答哦');
-        }else{
+        if (t) {
+          _this.$message.error('还差' + t + '个没有回答哦');
+        } else {
           this.$message({
             message: '恭喜你，全部回答正确，真厉害！',
             type: 'success'
           });
         }
-      }, // 检查答案
-      showAnswer(){
+      }, // 检查答案--有没有空的
+      showAnswer() {
         this.$confirm('不再努力一下了吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -386,7 +393,7 @@
         }
       }
     }
-    .show-answer{
+    .show-answer {
       margin-top: 10px;
     }
   }
