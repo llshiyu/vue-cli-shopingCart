@@ -1,408 +1,457 @@
 <template>
-  <div class="num-box" v-show="numShow" id="num">
-    <div class="num-tips">
-      <p>所谓的数独：规则</p>
+  <div class="sudoku-box">
+    <div class="tips">
+      <p>数独规则</p>
       <p>1.每一行数字不重复</p>
       <p>2.每一列数字不重复</p>
     </div>
-    <div class="num-table" @mouseleave="hoverCol=''" :class="{'shake':isShake}">
-      <!--遍历每一行-->
-      <div v-for="row,index in allNum" class="num-row clear">
-        <!--遍历行里面的每一列-->
-        <!--
-            no:被掏空数组的样式
-            cur:格子被点击时触发，被点击的格子样式
-            cur-col:鼠标进入的时候触发，和被点击格子同一列的格子的样式
-            err：填写错误的时候触发的样式
+    <el-select v-model="difficulty" placeholder="请选择难度" @change="diffChange">
+      <el-option
+        v-for="item in difficultyList"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+      </el-option>
+    </el-select>
+    <el-button type="primary" @click="checkAnswer">交卷</el-button>
+    <div class="list" @mouseleave="hoverJ=''" :class="{'shake':isShake}">
+      <div class="row clearfix" v-for="(item,i) in rowList" :key="i">
+        <!-- empty 填空
+            hover-j 鼠标所在列
+            click-empty 点击填空
+            err 出错的
         -->
-        <div v-for="num1,indexSub in row"
-             :class="{'no':num1==='',
-                 'cur':curRow===index&&indexSub===curCol,
-                 'cur-col':hoverCol===indexSub,
-                 'err':(optionNow.x===index&&optionNow.y===indexSub)||
-                 (optionNowInRow.x===index&&optionNowInRow.y===indexSub)||
-                 (optionNowInCol.x===index&&optionNowInCol.y===indexSub)}"
-             @click="showCheck(index,indexSub)" @mouseenter="hoverCol=indexSub;" class="num-col">
-          {{allNumText[index][indexSub]}}
-
+        <div class="col fl"
+             :class="{'empty':num==='',
+                      'hover-j':hoverJ===j,
+                      'click-empty':emptyI===i && emptyJ===j,
+                      'err':(errOption.x===i && errOption.y===j)||
+                            (errRowOption.x===i && errRowOption.y===j)||
+                            (errColOption.x===i && errColOption.y===j)}"
+             @click="showOptions(i,j)" @mouseenter="hoverJ=j;"
+             v-for="(num,j) in item" :key="j">
+          {{showRowList[i][j]}}
         </div>
       </div>
-      <!--数字键盘-->
-      <div class="num-check clear" :style="{'top':(curRow+1)*60+'px','left':(curCol+1)*60+'px'}"
-           v-show="checkShow">
-        <ul>
-          <li @click="inputText(1)">1</li>
-          <li @click="inputText(2)">2</li>
-          <li @click="inputText(3)">3</li>
-          <li @click="inputText(4)">4</li>
-          <li @click="inputText(5)">5</li>
-          <li @click="inputText(6)">6</li>
-          <li @click="inputText(7)">7</li>
-          <li @click="inputText(8)">8</li>
-          <li @click="inputText(9)">9</li>
-        </ul>
-      </div>
+      <ul class="answer clearfix" v-show="checkShow"
+          :style="{'top':(emptyI<6?(emptyI+1):(emptyI-3))*60+'px',
+                  'left':(emptyJ<6?(emptyJ+1):(emptyJ-3))*60+'px'}">
+        <li @click="inputText(1)">1</li>
+        <li @click="inputText(2)">2</li>
+        <li @click="inputText(3)">3</li>
+        <li @click="inputText(4)">4</li>
+        <li @click="inputText(5)">5</li>
+        <li @click="inputText(6)">6</li>
+        <li @click="inputText(7)">7</li>
+        <li @click="inputText(8)">8</li>
+        <li @click="inputText(9)">9</li>
+      </ul>
     </div>
+    <el-button @click="showAnswer" class="show-answer">查看答案</el-button>
   </div>
 </template>
 
 <script>
-    export default {
-        name: "index",
-      data(){
-          return{
-            nowIndex: 0,
-            allNum: [],//数字排列
-            answer: [],//所有答案的坐标点
-            allNumText: [],//数字，包括输入后的数字
-            curRow: '',//当前格子所在的行的索引
-            curCol: '',//当前格子所在的列的索引
-            checkShow: false,//数字键盘的显示
-            hoverCol: '',//鼠标进去的当前列
-            hoverRow: 0,//鼠标进入的当前行
-            numShow: true,//数独的显示
-            optionNow: {},//输入后的格子的坐标
-            optionNowInRow: {},//和输入后的格子在同一行，并且同样值的格子的坐标
-            optionNowInCol: {},//和输入后的格子在同一列，并且同样值的格子的坐标
-            isErr: false,//是否输入错误后
-            isShake: false//是否显示震动的样式
-          }
-      },
-      mounted(){
-        this.init();
-      },
-      methods: {
-          init(){
-            let arr1 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-            let row = [], rowCol = 0;
-            for (let i = 0, len = arr1.length; i < len; i++) {
-              row = Object.assign([], arr1);
-              console.log(row,999)
-              this.allNum.push(row);
-              console.log(this.allNum,88)
-              rowCol = arr1.splice(0, 1)[0];
-              arr1.push(rowCol)
-            }
-            console.log(arr1,row,rowCol,this.allNum)
-            //打乱行
-            this.allNum.sort((n1, n2) => Math.random() - 0.5);
-            //随机获取两列的索引
-            function randomText() {
-              let rondomIndex = 0, rondomIndexAfter = 0;
-              //获取第一列的索引
-              rondomIndex = Math.floor(Math.random() * 9);
-              function randomDo() {
-                rondomIndexAfter = Math.floor(Math.random() * 9);
-                //如果第一列和第二列索引一样，第二列的索引再次重新获取
-                if (rondomIndexAfter === rondomIndex) {
-                  randomDo();
-                }
-              }
-
-              randomDo();
-              //返回两列的索引
-              return [rondomIndex, rondomIndexAfter]
-            }
-
-            //打乱列
-            let randomArr = [], nowValue = 0;
-            //同样遍历9次
-            for (let i = 0; i < 9; i++) {
-              randomArr = Object.assign([], randomText());
-              //遍历每一行，给每一行的随机两列交换值
-              for (let j = 0, len = this.allNum.length; j < len; j++) {
-                //随机两列交换值
-                nowValue = this.allNum[j][randomArr[0]];
-                this.allNum[j][randomArr[0]] = this.allNum[j][randomArr[1]];
-                this.allNum[j][randomArr[1]] = nowValue;
-              }
-            }
-
-            //记录所有坐标
-            let rowText = '', arrText = []
-            for (let i = 0; i < 9; i++) {
-              rowText = ''
-              for (let j = 0; j < 9; j++) {
-                rowText += i + '-' + j + ',';
-              }
-              arrText.push(rowText.substr(0, rowText.length - 1))
-            }
-            console.log(arrText);
-            //随机掏空
-            let nowItme = [], _option, nowOption = [];
-            for (let i = 0; i < 9; i++) {
-              //抽取当前行的所有坐标
-              nowItme = arrText[i].split(',');
-              nowOption = [];
-              //当前行的随机两个坐标掏空
-              for (let j = 0; j < 2; j++) {
-                //抽取当前行的随机一个坐标
-                _option = Math.floor(Math.random() * nowItme.length);
-                //分割坐标的x,y
-                nowOption = nowItme.splice(_option,1)[0].split("-");
-                this.allNum[nowOption[0]][nowOption[1]] = '';
-              }
-
-            }
-            //深度拷贝数独的数字
-            this.allNumText = JSON.parse(JSON.stringify(this.allNum));
+  export default {
+    name: "test",
+    data() {
+      return {
+        emptyRowNum: 1, // 每行需要填空的个数
+        numLen: 9, // 一行9个 9行
+        rowList: [],
+        showRowList: [], // 要展示的数
+        answerList: [], // 答案
+        hoverJ: null, // 鼠标指向的J 列
+        emptyI: null, // 填空所在的行
+        emptyJ: null, // 填空所在的列
+        checkShow: false, //选答案
+        isErr: false,
+        isShake: false, //错误的动画
+        errOption: {
+          x: null,
+          y: null
+        }, // 当前选项错的
+        errRowOption: {
+          x: null,
+          y: null
+        }, // 行有错的
+        errColOption: {
+          x: null,
+          y: null
+        }, // 列有错的
+        difficulty: '简单',
+        difficultyList: [
+          {
+            label: '简单',
+            value: 1
           },
-        /**
-         * @description 显示数字键盘
-         * @param i1
-         * @param i2
-         */
-        showCheck(i1, i2){
-          //点击的格子是否是被掏空的格子
-          if (this.allNum[i1][i2] !== '') {
-            return
+          {
+            label: '一般',
+            value: 2
+          },
+          {
+            label: '困难',
+            value: 3
+          },
+          {
+            label: '超神',
+            value: 4
+          },
+          {
+            label: '变态',
+            value: 5
           }
-          //点击的格子如果是上一次点击的格子（当前格子）
-          if (i1 === this.curRow && i2 === this.curCol) {
-            //隐藏数字键盘，curRow和curCol设空
-            this.checkShow = false;
-            this.curRow = '';
-            this.curCol = '';
-          }
-          else {
-            //隐藏数字键盘，curRow和curCol分别设置成当前的点
-            this.checkShow = true;
-            this.curRow = i1;
-            this.curCol = i2;
-          }
-        },
-        inputText(_text){
-          //*****************************检查前的初始化
-          let _row = this.curRow, _col = this.curCol;
-          this.curRow = '';
-          this.curCol = '';
-          this.isErr = false;
-          this.optionNow = {
-            x: '',
-            y: '',
-          }
-          this.optionNowInRow = {
-            x: '',
-            y: '',
-          }
-          this.optionNowInCol = {
-            x: '',
-            y: '',
-          }
-          //*****************************检查行
-          //保存当前格子的值
-          this.allNumText[_row][_col] = _text;
-          let rowCheck = Object.assign(this.allNumText[_row], []);
-          this.checkShow = false;
-          for (let i = 0, len = rowCheck.length; i < len; i++) {
-            //如果值一样，但是坐标不一样，就是填写错误
-            if (_text === rowCheck[i] && _col !== i) {
-              this.isErr = true;
-              this.isShake = true;
-              //记录当前格子的信息
-              this.optionNow = {
-                x: _row,
-                y: _col
-              }
-              //记录和当前格子同一行，以及同一个值的格子的坐标
-              this.optionNowInRow = {
-                x: _row,
-                y: i
-              }
-            }
-          }
-          //*****************************检查列
-          let colCheck = [];
-          //首先把每一行的那一列的数值保存起来
-          for (let i = 0, len = this.allNumText.length; i < len; i++) {
-            colCheck.push(this.allNumText[i][_col]);
-          }
-          //遍历检查
-          for (let i = 0, len = colCheck.length; i < len; i++) {
-            //如果值一样，但是坐标不一样，就是填写错误
-            if (_text === colCheck[i] && _row !== i) {
-              this.isErr = true;
-              this.isShake = true;
-              //记录和当前格子同一列，以及同一个值的格子的坐标
-              this.optionNowInCol = {
-                x: i,
-                y: _col
-              }
-            }
-          }
-          //如果发现的同样的
-          if (this.isErr) {
-            setTimeout(() => {
-              this.isShake = false;
-            }, 1000)
-            return;
-          }
-          //如果数组去重后，长度小于9，就是行没完成
-          rowCheck = rowCheck.filter(item => item !== '');
-          if (rowCheck.length !== 9) {
-            console.log('行没完成')
-            return;
-          }
+        ], // 难度
+      }
+    },
+    mounted() {
+      this.init();
+    },
+    methods: {
+      init() {
+        let _this = this;
 
-          let coloCheck = [];
-          //如果数组去重后，长度小于9，就是列没完成
-          for (let i = 0, len = this.allNumText.length; i < len; i++) {
-            coloCheck = [...new Set(this.allNumText[i])];
-            coloCheck = coloCheck.filter(item => item !== '');
-            if (coloCheck.length !== 9) {
-              console.log('没完成')
-              return;
+        /************************初始化************************/
+        _this.rowList = [];
+        _this.showRowList = []; // 要展示的数
+        _this.answerList = [];// 答案
+        _this.checkShow = false;
+        _this.emptyI = null;
+        _this.emptyJ = null;
+
+        /************************生成棋盘************************/
+        let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let row = [], rowCol = 0;
+        for (let i = 0; i < _this.numLen; i++) {
+          row = Object.assign([], arr);
+          _this.rowList.push(row);
+          rowCol = arr.splice(0, 1)[0];
+          arr.push(rowCol)
+        } // 生成9*9二维数组 有序的
+
+        //a<b a-b 从小到大升序,b-a 从大到小降序，
+        //Math.random()产生一个随机数，小于0.5，升序，大于0.5 降序。
+        _this.rowList.sort((a, b) => Math.random() - 0.5); // 打乱行
+
+        let randomColArr = [], t = 0;
+        for (let i = 0; i < _this.numLen; i++) {
+          randomColArr = Object.assign([], _this.randomText()); // 随机生成两个列坐标
+          for (let j = 0, len = _this.rowList.length; j < len; j++) {
+            t = _this.rowList[j][randomColArr[0]];
+            _this.rowList[j][randomColArr[0]] = _this.rowList[j][randomColArr[1]];
+            _this.rowList[j][randomColArr[1]] = t;
+          } // 遍历每一行，随机交换两列
+        } // 打乱列
+
+        /************************记录答案************************/
+        _this.answerList = _this.deepCopy(_this.rowList); // 答案记录
+
+        /************************记录坐标************************/
+        let rowText = '', arrText = [];
+        for (let i = 0; i < _this.numLen; i++) {
+          rowText = '';
+          for (let j = 0; j < _this.numLen; j++) {
+            rowText += i + '-' + j + ',';
+          }
+          arrText.push(rowText.substr(0, rowText.length - 1))
+        } // 记录坐标数组，一行一个字符串
+        // console.log(arrText);
+
+        /************************随机掏空************************/
+        let nowItem = [], optionN, nowOption = [];
+        for (let i = 0; i < _this.numLen; i++) {
+          nowItem = arrText[i].split(',');
+          nowOption = [];
+          for (let j = 0; j < _this.emptyRowNum; j++) {
+            optionN = Math.floor(Math.random() * nowItem.length);
+            // console.log(i,nowItem,optionN)
+            nowOption = nowItem.splice(optionN, 1)[0].split('-');
+            this.rowList[nowOption[0]][nowOption[1]] = '';
+          }
+        } // 随机掏空
+
+        /************************页面渲染************************/
+        this.showRowList = this.deepCopy(this.rowList); // 通过json深拷贝
+      },
+      diffChange(e) {
+        this.emptyRowNum = e;
+        this.init();
+      }, // 难度选择
+      randomText() {
+        let _this = this;
+        let randomIndex = 0, randomIndexAfter = 0;
+        randomIndex = Math.floor(Math.random() * _this.numLen); // 生成0-9随机数
+        function randomDo() {
+          randomIndexAfter = Math.floor(Math.random() * _this.numLen);
+          if (randomIndexAfter === randomIndex) {
+            randomDo();
+          }
+        }
+
+        randomDo();
+        return [randomIndex, randomIndexAfter]
+      }, // 随机生成两个不一样的0-9随机数
+      deepCopy(t) {
+        return JSON.parse(JSON.stringify(t))
+      }, // 深拷贝
+      showOptions(i, j) {
+        this.checkShow = false;
+        this.emptyI = null;
+        this.emptyJ = null;
+        if (this.isErr && (i !== this.errOption.x || j !== this.errOption.y)) {
+          return
+        } // 有错误时只能改出错的那个
+        if (this.rowList[i][j] !== '') {
+          return
+        }
+        if (this.emptyI === i && this.emptyJ === j) {
+          this.checkShow = false;
+          this.emptyI = null;
+          this.emptyJ = null;
+        } else {
+          this.checkShow = true;
+          this.emptyI = i;
+          this.emptyJ = j;
+        }
+      }, // 点击开始选答案
+      inputText(n) {
+        let _this = this;
+
+        /************************初始化************************/
+        let row = _this.emptyI, col = _this.emptyJ;
+        _this.emptyI = null;
+        _this.emptyJ = null;
+        _this.errOption = {
+          x: null,
+          y: null
+        }; // 当前选项错的
+        _this.errRowOption = {
+          x: null,
+          y: null
+        }; // 行有错的
+        _this.errColOption = {
+          x: null,
+          y: null
+        }; // 列有错的
+        _this.checkShow = false;
+        _this.isErr = false;
+        _this.isShake = false;
+        _this.showRowList[row][col] = n;
+
+        /************************判断对错************************/
+
+        let rowRepeat = _this.checkRow(n, row, col);
+        let colRepeat = _this.checkCol(n, row, col);
+
+        console.log(_this.answerList[row][col], rowRepeat, colRepeat)
+
+        if (rowRepeat > -1 || colRepeat > -1) {
+          _this.isErr = true;
+          _this.isShake = true;
+          _this.errOption = {
+            x: row,
+            y: col
+          };// 输入错
+          _this.errRowOption = {
+            x: row,
+            y: rowRepeat
+          }; // 行有错的---行有和输入一样的数字
+          _this.errColOption = {
+            x: colRepeat,
+            y: col
+          }; // 列有错的---列有和输入一样的数字
+        }
+
+        if(_this.isErr){
+          setTimeout(()=>{
+            _this.isShake = false;
+          },1000);
+          return
+        }
+
+        _this.$forceUpdate();
+      }, // 填空
+      checkRow(n, row, col) {
+        let _this = this;
+        for (let i = 0; i < _this.numLen; i++) {
+          if (_this.showRowList[row][i] === n && col !== i) {
+            return i;
+          }
+        }
+        return -1;
+      }, // 检查每行中和输入的值一样的，返回列坐标
+      checkCol(n, row, col) {
+        let _this = this;
+        for (let i = 0; i < _this.numLen; i++) {
+          if (_this.showRowList[i][col] === n && row !== i) {
+            return i;
+          }
+        }
+        return -1;
+      },// 检查每列中和输入的值一样的，返回行坐标
+      checkAnswer() {
+        let _this = this;
+        let t = 0;
+        for (let i = 0; i < _this.numLen; i++) {
+          for (let j = 0; j < _this.numLen; j++) {
+            if (_this.showRowList[i][j] === '') {
+              t++;
             }
           }
-          alert('挑战成功，但是没奖品');
-          this.numShow = false;
         }
-      },
+        if (t) {
+          _this.$message.error('还差' + t + '个没有回答哦');
+        } else {
+          this.$message({
+            message: '恭喜你，全部回答正确，真厉害！',
+            type: 'success'
+          });
+        }
+      }, // 检查答案--有没有空的
+      showAnswer() {
+        this.$confirm('不再努力一下了吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.showRowList = this.deepCopy(this.answerList);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      }
     }
+  }
 </script>
 
-<style scoped>
-  body, h1, h2, h3, h4, h5, h6, dl, dt, dd, ul, ol, li, th, td, p, pre, form, input, button, textarea, hr {
-    margin: 0;
-    padding: 0;
-  }
+<style lang="less" scoped>
+  .sudoku-box {
+    margin-top: -50px;
+    .tips {
+      p {
+        line-height: 20px;
+        margin: 0;
+      }
+    }
+    .list {
+      width: 540px;
+      margin: 10px auto 0;
+      border: 1px solid #ccc;
+      position: relative;
+      .row {
+        .col {
+          width: 60px;
+          height: 60px;
+          line-height: 60px;
+          background: #58B7FF;
+          color: #fff;
+          font-size: 24px;
+          font-weight: bold;
+          border: 1px solid #ccc;
+          box-sizing: border-box;
+          text-align: center;
+        }
+        .empty {
+          background: #ccc;
+          border: 1px solid #fff;
+          cursor: pointer;
+          color: #000;
+        }
+        .hover-j {
+          background: #0068b7;
+        }
+        &:hover {
+          .col, .empty {
+            background: #0068b7;
+          }
+          .click-empty {
+            background: #ffffff;
+          }
+        }
+        .click-empty {
+          background: #ffffff;
+        }
+        .err {
+          color: #ff0000;
+        }
+      }
+      .answer {
+        list-style-type: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 180px;
+        box-shadow: 0 0 10px 0 #000;
+        padding: 0;
+        margin: 0;
+        li {
+          float: left;
+          list-style-type: none;
+          box-sizing: border-box;
+          background: #fff;
+          color: #58B7FF;
+          width: 60px;
+          height: 60px;
+          text-align: center;
+          line-height: 60px;
+          font-size: 24px;
+          border: 1px solid #58B7FF;
+          cursor: pointer;
+          transition: all .5s;
+        }
+      }
+    }
+    .show-answer {
+      margin-top: 10px;
+    }
 
-  em, i {
-    font-style: normal;
-  }
 
-  ul, li {
-    list-style-type: none;
-  }
-  .clear:after,.clearfix:after{
-    display: block;
-    content: "";
-    clear: both;
-  }
-  .fllil li{
-    float: left;
-  }
-  .ml30{
-    margin-left: 30px;
-  }
-
-  li{
-    list-style-type: none;
-  }
-  .shake {
-    animation: shake-opacity 500ms 1 ease-in-out;
-  }
-  @keyframes shake-opacity {
-    0% {
-      transform: translate(0px, 0px) rotate(0deg);
-      opacity: 0.6;
+    .shake {
+      animation: shake-opacity 500ms 1 ease-in-out;
     }
-    10% {
-      transform: translate(-2px, -1px) rotate(-0.5deg);
-      opacity: 0.5;
+    @keyframes shake-opacity {
+      0% {
+        transform: translate(0px, 0px) rotate(0deg);
+        opacity: 0.6;
+      }
+      10% {
+        transform: translate(-2px, -1px) rotate(-0.5deg);
+        opacity: 0.5;
+      }
+      20% {
+        transform: translate(-4px, 4px) rotate(1.5deg);
+        opacity: 0.4;
+      }
+      30% {
+        transform: translate(-4px, -1px) rotate(-1.5deg);
+        opacity: 0.8;
+      }
+      40% {
+        transform: translate(-2px, -1px) rotate(-2.5deg);
+        opacity: 0.3;
+      }
+      50% {
+        transform: translate(-4px, 1px) rotate(-2.5deg);
+        opacity: 0.5;
+      }
+      60% {
+        transform: translate(-2px, 4px) rotate(0.5deg);
+        opacity: 0.1;
+      }
+      70% {
+        transform: translate(-3px, 1px) rotate(-0.5deg);
+        opacity: 0.4;
+      }
+      80% {
+        transform: translate(0px, 0px) rotate(-0.5deg);
+        opacity: 0.5;
+      }
+      90% {
+        transform: translate(2px, -1px) rotate(-2.5deg);
+        opacity: 0.8;
+      }
     }
-    20% {
-      transform: translate(-4px, 4px) rotate(1.5deg);
-      opacity: 0.4;
-    }
-    30% {
-      transform: translate(-4px, -1px) rotate(-1.5deg);
-      opacity: 0.8;
-    }
-    40% {
-      transform: translate(-2px, -1px) rotate(-2.5deg);
-      opacity: 0.3;
-    }
-    50% {
-      transform: translate(-4px, 1px) rotate(-2.5deg);
-      opacity: 0.5;
-    }
-    60% {
-      transform: translate(-2px, 4px) rotate(0.5deg);
-      opacity: 0.1;
-    }
-    70% {
-      transform: translate(-3px, 1px) rotate(-0.5deg);
-      opacity: 0.4;
-    }
-    80% {
-      transform: translate(0px, 0px) rotate(-0.5deg);
-      opacity: 0.5;
-    }
-    90% {
-      transform: translate(2px, -1px) rotate(-2.5deg);
-      opacity: 0.8;
-    }
-  }
-  .num-box {
-    margin: 0 auto;
-    width: 540px;
-    position: relative;
-  }
-  .num-box .num-check {
-    position: absolute;
-    width: 180px;
-    box-shadow: 0 0 10px 0 #000;
-    left: 0;
-    top: 0;
-  }
-  .num-box .num-check li {
-    box-sizing: border-box;
-    float: left;
-    background: #fff;
-    color: #58B7FF;
-    width: 60px;
-    height: 60px;
-    text-align: center;
-    line-height: 60px;
-    font-size: 24px;
-    border: 1px solid #58B7FF;
-    cursor: pointer;
-    transition: all .5s;
-  }
-  .num-box .num-check li:hover {
-    color: #fff;
-    background: #58B7FF;
-    border: 1px solid #fff;
-  }
-  .num-tips{
-    color: #333;
-    line-height: 32px;
-    font-size: 16px;
-  }
-  .num-table{
-    position: relative;
-  }
-  .num-row {
-    font-size: 0;
-  }
-  .num-row:hover .num-col, .num-row:hover .num-col.no, .num-row:hover .num-col.cur-col {
-    background: #0068b7;
-  }
-  .num-row .num-col {
-    width: 60px;
-    height: 60px;
-    line-height: 60px;
-    float: left;
-    box-sizing: border-box;
-    text-align: center;
-    background: #58B7FF;
-    color: #fff;
-    font-size: 24px;
-    font-weight: bold;
-    border: 1px solid #ccc;
-  }
-  .num-row .num-col.no {
-    background: #ccc;
-    border: 1px solid #fff;
-  }
-  .num-row .num-col.err {
-    color: #ff4949;
-  }
-  .num-row .num-col.cur-col {
-    background: #0068b7;
-  }
-  .num-row .num-col.cur {
-    background: #fff !important;
   }
 </style>

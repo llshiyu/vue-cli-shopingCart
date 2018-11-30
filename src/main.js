@@ -8,11 +8,14 @@ import vuex from 'vuex'
 import store from './vuex'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import iView from 'iview';
+import 'iview/dist/styles/iview.css';
 // import fs from 'fs';
 
 // Vue.use(fs)
 Vue.use(vuex)
 Vue.use(ElementUI)
+Vue.use(iView);
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
 

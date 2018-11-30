@@ -22,12 +22,17 @@ export default new Router({
     {
       path: '/sudoku',
       name: 'sudoku',
-      component: resolve => require(['@/components/Sudoku/test'], resolve)
+      component: resolve => require(['@/components/Sudoku/index'], resolve)
     }, // 数独
     {
       path: '/poker',
       name: 'poker',
-      component: resolve => require(['@/components/Poker/index'], resolve)
+      component: resolve => require(['@/components/Poker/test'], resolve)
+    }, // 翻盘找相同
+    {
+      path: '/2048',
+      name: '2048',
+      component: resolve => require(['@/components/2048/index'], resolve)
     }, // 翻盘找相同
     {
       path: '/map',
