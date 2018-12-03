@@ -4,6 +4,7 @@
       <h1>贪吃蛇</h1>
       <Button type="primary" @click="start">开始</Button>
       <Button type="primary" @click="stop">暂停</Button>
+      <Button type="primary" @click="init">重置</Button>
       <p>score: <span :style="{color:(score>0?'#ff0000':'#000')}">{{score}}</span></p>
     </div>
     <div class="game">
