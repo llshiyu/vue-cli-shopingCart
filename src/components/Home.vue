@@ -3,6 +3,7 @@
     <router-link to="/sudoku">Sudoku</router-link>
     <router-link to="/2048">2048</router-link>
     <router-link to="/snake">贪吃蛇</router-link>
+    <router-link to="/tetris">俄罗斯方块</router-link>
     <router-link to="/poker">Poker</router-link>
     <router-link to="/map">Map</router-link>
     <router-link to="/mapDingwei">MapDingwei</router-link>

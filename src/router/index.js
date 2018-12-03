@@ -40,6 +40,11 @@ export default new Router({
       component: resolve => require(['@/components/Snake/index'], resolve)
     }, // 贪吃蛇
     {
+      path: '/tetris',
+      name: 'tetris',
+      component: resolve => require(['@/components/Tetris/index'], resolve)
+    }, // 俄罗斯方块
+    {
       path: '/map',
       name: 'map',
       component: resolve => require(['@/components/map'], resolve)
