@@ -23,6 +23,7 @@
         mapSize: 4,
         score: 0, // 分数
         numArr: [],
+        // numArr1: [],
         needNewPoint: 0, //需要几个新点
       }
     },
@@ -127,15 +128,25 @@
           this.numArr.push(row);
         }
 
+        // for(let i=0;i<=this.mapSize+1;i++){
+        //   this.numArr1[i] = [];
+        //   for(let j=0;j<=this.mapSize+1;j++){
+        //     this.numArr1[i][j] = 0;
+        //   }
+        // }
+
         //边界
         for (let x = 0; x <= this.mapSize + 1; x++) {
           for (let y = 0; y <= this.mapSize + 1; y++) {
             if (x === 0 || y === 0 || x === this.mapSize + 1 || y === this.mapSize + 1) {
               this.numArr[x][y] = -11;
+              // this.numArr1[x][y] = -11;
             }
           }
         }
         console.log(this.numArr);
+        // console.log(this.numArr1);
+        // this.$forceUpdate()
         this.generateOneNum();
         this.generateOneNum();
       },
@@ -173,7 +184,7 @@
             default:
               break;
           }
-          console.log(this.needNewPoint, 999);
+          // console.log(this.needNewPoint, 999);
           if (this.needNewPoint === 1) {
             this.generateOneNum();
             this.needNewPoint = 0;
@@ -213,6 +224,17 @@
               break;
             default:
               break;
+          }
+          // console.log(this.needNewPoint, 999);
+          if (this.needNewPoint === 1) {
+            this.generateOneNum();
+            this.needNewPoint = 0;
+          }
+          if (this.isGameOver()) {
+            this.$message({
+              message: 'Game Over!',
+              type: 'info'
+            });
           }
         })
       },
