@@ -2,7 +2,8 @@
   <div class="snake">
     <div class="head">
       <h1>贪吃蛇</h1>
-      <Button type="primary" @click="start">Start</Button>
+      <Button type="primary" @click="start">开始</Button>
+      <Button type="primary" @click="stop">暂停</Button>
       <p>score: <span :style="{color:(score>0?'#ff0000':'#000')}">{{score}}</span></p>
     </div>
     <div class="game">
@@ -64,7 +65,7 @@
     },
     methods: {
       init() {
-        clearInterval(this.timer);
+        this.stop();
         this.direction = 1; // 方向 -1left 1right -2up 2down
         this.bodyLen = 4; // 初始身体长度
         this.bodyPosition = []; // 身体坐标
@@ -77,6 +78,9 @@
         this.timer = setInterval(() => {
           this.autoRun()
         }, 300)
+      },
+      stop(){
+        clearInterval(this.timer);
       },
       getInitBody() {
         for (let i = 0; i < this.bodyLen; i++) {
@@ -112,6 +116,9 @@
         return 0
       },
       change(t) { // t-移动方向 -1left 1right -2up 2down
+        if(this.overModel){ // 结束
+          return
+        }
         if (Math.abs(t) === Math.abs(this.direction)) { // 当前移动方向和上一次一样就不移动，上次往左这次就不能往右,上次往左这次再往左没意义
           return
         } else {
@@ -132,10 +139,12 @@
 
         if (this.isGameOver(headX, headY)) {
           this.overModel = true;
+          this.stop();
         } else {
           this.bodyPosition.push([headX, headY]);
           if (headX === this.foodPosition[0] && headY === this.foodPosition[1]) {
             this.getFood();
+            this.score += 2;
           } else {
             this.bodyPosition.shift();
           }
