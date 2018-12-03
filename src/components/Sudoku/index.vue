@@ -336,7 +336,7 @@
       }
     }
     .list {
-      width: 540px;
+      width: 542px;
       margin: 10px auto 0;
       border: 1px solid #ccc;
       position: relative;
