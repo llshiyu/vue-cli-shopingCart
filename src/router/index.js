@@ -33,7 +33,12 @@ export default new Router({
       path: '/2048',
       name: '2048',
       component: resolve => require(['@/components/2048/index'], resolve)
-    }, // 翻盘找相同
+    }, // 2048
+    {
+      path: '/snake',
+      name: 'snake',
+      component: resolve => require(['@/components/Snake/index'], resolve)
+    }, // 贪吃蛇
     {
       path: '/map',
       name: 'map',
