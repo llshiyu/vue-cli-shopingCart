@@ -21,9 +21,9 @@
     data() {
       return {
         mapSize: 4,
-        score: 10, // 分数
+        score: 0, // 分数
         numArr: [],
-        needNewPoint:0 , //需要几个新点
+        needNewPoint: 0, //需要几个新点
       }
     },
     created() {
@@ -45,27 +45,75 @@
             'backgroundColor': this.getNumberBackgroundColor(num)
           }
         }
-      },
-      numberStyle(){
+      }, // 单元格样式
+      getNumberBackgroundColor(){
         return (num)=>{
-          let color,size;
+          switch (num) {
+            case 2:
+              return '#eee4da';
+              break;
+            case 4:
+              return '#ede0c8';
+              break;
+            case 8:
+              return '#f2b179';
+              break;
+            case 16:
+              return '#f59563';
+              break;
+            case 32:
+              return '#f67c5f';
+              break;
+            case 64:
+              return '#f65e3b';
+              break;
+            case 128:
+              return '#edcf72';
+              break;
+            case 256:
+              return '#edcc61';
+              break;
+            case 512:
+              return '#9c0';
+              break;
+            case 1024:
+              return '#33b5e5';
+              break;
+            case 2048:
+              return '#09c';
+              break;
+            case 4096:
+              return '#a6c';
+              break;
+            case 8192:
+              return '#93c';
+              break;
+            default:
+              return '#ccc0b3';
+              break;
+          }
+        }
+      }, // 根据number不同背景色不同
+      numberStyle() {
+        return (num) => {
+          let color, size;
           if (num <= 4) {
             color = '#776e65'
-          }else{
+          } else {
             color = '#ffffff';
           }
-          if(num>100){
+          if (num > 100) {
             size = 40;
-          }else if(num>1000){
+          } else if (num > 1000) {
             size = 30;
-          }else{
+          } else {
             size = 50;
           }
           return {
-            'color':color,'fontSize':size+'px'
+            'color': color, 'fontSize': size + 'px'
           }
         }
-      }
+      } // 数字样式
     },
     mounted() {
       this.init()
@@ -94,63 +142,17 @@
       generateOneNum() {
         let randomNum, x, y;
         randomNum = parseInt(Math.random() * this.mapSize * this.mapSize);
-        x = parseInt(randomNum / this.mapSize)+1;
-        y = parseInt(randomNum % this.mapSize)+1;
+        x = parseInt(randomNum / this.mapSize) + 1;
+        y = parseInt(randomNum % this.mapSize) + 1;
         if (this.numArr[x][y] !== 0) {
           this.generateOneNum();
           return
         }
-        setTimeout(()=>{
+        setTimeout(() => {
           this.numArr[x][y] = Math.random() < 0.5 ? 2 : 4;
           this.$forceUpdate();
-        },100);
+        }, 100);
       }, // 随机位置生成一个数
-      getNumberBackgroundColor(num) {
-        switch (num) {
-          case 2:
-            return '#eee4da';
-            break;
-          case 4:
-            return '#ede0c8';
-            break;
-          case 8:
-            return '#f2b179';
-            break;
-          case 16:
-            return '#f59563';
-            break;
-          case 32:
-            return '#f67c5f';
-            break;
-          case 64:
-            return '#f65e3b';
-            break;
-          case 128:
-            return '#edcf72';
-            break;
-          case 256:
-            return '#edcc61';
-            break;
-          case 512:
-            return '#9c0';
-            break;
-          case 1024:
-            return '#33b5e5';
-            break;
-          case 2048:
-            return '#09c';
-            break;
-          case 4096:
-            return '#a6c';
-            break;
-          case 8192:
-            return '#93c';
-            break;
-          default:
-            return '#ccc0b3';
-            break;
-        }
-      }, // 根据number不同背景色不同
       pcKey() {
         document.onkeydown = (e) => {
           let key = window.event.keyCode;
@@ -171,12 +173,12 @@
             default:
               break;
           }
-          console.log(this.needNewPoint,999);
-          if(this.needNewPoint===1){
+          console.log(this.needNewPoint, 999);
+          if (this.needNewPoint === 1) {
             this.generateOneNum();
             this.needNewPoint = 0;
           }
-          if(this.isGameOver()){
+          if (this.isGameOver()) {
             this.$message({
               message: 'Game Over!',
               type: 'info'
@@ -258,41 +260,42 @@
       move(x, y, dx, dy) {
         for (let i = x; i < x + this.mapSize; i++) {
           for (let j = y; j < y + this.mapSize; j++) {
-            this.moveAndMarge(Math.abs(i-this.mapSize),Math.abs(j-this.mapSize),dx,dy);
+            this.moveAndMarge(Math.abs(i - this.mapSize), Math.abs(j - this.mapSize), dx, dy);
           }
         }
       },
-      moveAndMarge(x,y,dx,dy){
+      moveAndMarge(x, y, dx, dy) {
         // console.log('x',x,'y',y,'dx',dx,'dy',dy,this.numArr[x][y]);
-        if(this.numArr[x][y]===0){
+        if (this.numArr[x][y] === 0) {
           return
         } // 目标是0不用移
-        if(this.numArr[x+dx][y+dy]!==0&&this.numArr[x][y]!==this.numArr[x+dx][y+dy]){
+        if (this.numArr[x + dx][y + dy] !== 0 && this.numArr[x][y] !== this.numArr[x + dx][y + dy]) {
           return
         } // 目标移动后不是0 并且移动后和移动前数字不一样 不用
         let num = this.numArr[x][y];
         this.needNewPoint = 1;
 
-        while (this.numArr[x+dx][y+dy]===0){
+        while (this.numArr[x + dx][y + dy] === 0) {
           this.numArr[x][y] = 0;
-          x+=dx;
-          y+=dy;
-          this.numArr[x][y] =num;
+          x += dx;
+          y += dy;
+          this.numArr[x][y] = num;
         } // 移动 直到目标点是0停止
 
-        if(this.numArr[x+dx][y+dy]===this.numArr[x][y]){
+        if (this.numArr[x + dx][y + dy] === this.numArr[x][y]) {
           this.numArr[x][y] = 0;
-          x+=dx;
-          y+=dy;
-          this.numArr[x][y] +=num;
+          x += dx;
+          y += dy;
+          this.numArr[x][y] += num;
+          this.score+=2;
         } // 当前点和目标点一样合并
 
         this.$forceUpdate();
       },
-      isGameOver(){
-        for(let i=1;i<=this.mapSize;i++){
-          for(let j=1;j<=this.mapSize;j++){
-            if(this.numArr[i][j]===0||this.numArr[i][j]===this.numArr[i-1][j]||this.numArr[i][j]===this.numArr[i][j-1]){
+      isGameOver() {
+        for (let i = 1; i <= this.mapSize; i++) {
+          for (let j = 1; j <= this.mapSize; j++) {
+            if (this.numArr[i][j] === 0 || this.numArr[i][j] === this.numArr[i - 1][j] || this.numArr[i][j] === this.numArr[i][j - 1]) {
               return 0;
             }
           }
