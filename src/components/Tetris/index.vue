@@ -8,7 +8,11 @@
       <p>score: <span :style="{color:(score>0?'#ff0000':'#000')}">{{score}}</span></p>
     </div>
     <div class="game">
-
+      <table>
+        <tr v-for="(item,i) in mapHeight" :key="i">
+          <td v-for="(jtem,j) in mapWidth" :key="j" :class="isTetris(i,j)||isBody(i,j)?'active':''"></td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
@@ -18,19 +22,212 @@
     name: "index",
     data() {
       return {
-        score: 0
+        score: 0,
+        mapWidth: 18,
+        mapHeight: 25,
+        isStart: 0,
+        shapePosition: {
+          1: [[0, 0], [1, 0], [0, 1], [1, 1]], // 方块
+          2: [[0, 0], [0, 1], [0, 2], [0, 3]], // 竖线  横线
+          3: [[0, 0], [0, 1], [0, 2], [1, 2]], // L 7 还有两个 总共4种
+          4: [[1, 0], [1, 1], [1, 2], [0, 2]], // L的镜像  总共4种
+          5: [[0, 0], [1, 0], [1, 1], [2, 1]], // Z Z镜像 N N镜像  总共4种
+          6: [[0, 0], [1, 0], [2, 0], [1, 1]]  // T 总共4种
+        }, // 模型坐标
+        tetrisPosition: [], // 上方掉落的方块
+        bodyPosition: [], // 下方堆积的方块
+        direction: 2, // 方向 -1left 1right -2up(暂时不做) 2down
+        timer: null
       }
+    },
+    created() {
+      const u = navigator.userAgent;
+      const isIos = /(iPhone|iPad|iPod|iOS)/i.test(u);
+      const isAndroid = /(Android)/i.test(u);
+      if (isAndroid || isIos) {
+        this.$alert('请用电脑打开', '暂不支持手机端', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$message({
+              type: 'info',
+              message: `action: ${ action }`
+            });
+          }
+        });
+      } else {
+        this.pcKey()
+      }
+      this.init();
+    },
+    mounted() {
     },
     methods: {
       init() {
-
+        this.getTetrisPosition();
       },
+      getTetrisPosition() {
+        this.tetrisPosition = [];
+        let shapeRandomI = this.getRandom(6) + 1; // 随机模型坐标
+        this.tetrisPosition = this.deepCopy(this.shapePosition[shapeRandomI]);
+        this.tetrisPosition.forEach((item, i) => {
+          item[1] += (this.mapWidth - 4) / 2;
+        });
+        this.$forceUpdate();
+        // console.log(this.tetrisPosition, this.shapePosition)
+      }, // 获取上方掉落的方块
+      deepCopy(t) {
+        return JSON.parse(JSON.stringify(t))
+      }, // 深拷贝
+      getRandom(t) {
+        return parseInt(Math.random() * t);
+      }, // 获取随机数 0到t-1的整数
       start() {
-
+        console.log('start')
+        this.isStart = 1;
+        this.timer = setInterval(() => {
+          this.autoRun();
+        }, 600)
       },
       stop() {
+        console.log('stop')
+        this.isStart = 0;
+        clearInterval(this.timer);
+      },
+      reset() {
+        this.getTetrisPosition();
+        this.bodyPosition = [];
+        this.start();
+      },
+      autoRun() {
+        let dx = 0, dy = 0;
+        switch (this.direction) { // 方向 -1left 1right -2up(暂时不做) 2down
+          case 1:
+          case '1':
+            dx = 0;
+            dy = 1;
+            this.direction = 2;
+            break;
+          case -1:
+          case '-1':
+            dx = 0;
+            dy = -1;
+            this.direction = 2;
+            break;
+          case 2:
+          case '2':
+            dx = 1;
+            dy = 0;
+            break;
+          case -2:
+          case '-2':
+            dx = 0;
+            dy = 0;
+            break;
+          default:
+            dx = 0;
+            dy = 0;
+            break;
+        }
 
-      }
+        if(this.isAddBody()){
+          this.stop();
+          this.getBody();
+          this.getTetrisPosition();
+          this.start();
+          return
+        }
+
+        this.tetrisPosition.forEach((item, i) => {
+          item[0] += dx;
+          item[1] += dy;
+        });
+        this.$forceUpdate();
+        console.log('run');
+      },
+      isAddBody(){
+        let t = 0;
+        this.tetrisPosition.forEach((item, i) => {
+          if (item[0] >= this.mapHeight - 1 || this.isBody(item[0],item[1])) {
+            t = 1;
+          }
+        });
+        return t
+      }, // 是否要往body里增加块
+      getBody() {
+        this.tetrisPosition.forEach((item, i) => {
+          this.bodyPosition.push(item)
+        });
+        this.$forceUpdate();
+        console.log(this.bodyPosition,'body')
+      },
+      isTetris(x, y) {
+        // this.tetrisPosition.forEach((item, i) => {
+        //   if (item[0] === x && item[1] === y) {
+        //     console.log(x,y)
+        //     return 1;
+        //   }
+        // });
+        for (let i = 0; i < this.tetrisPosition.length; i++) {
+          if (this.tetrisPosition[i][0] === x && this.tetrisPosition[i][1] === y) {
+            return 1;
+          }
+        }
+        return 0;
+      }, // 上面掉下来的块
+      isBody(x, y) {
+        // this.bodyPosition.forEach((item, i) => {
+        //   if (item[0] === x && item[1] === y) {
+        //     return 1;
+        //   }
+        // });
+        for (let i = 0; i < this.bodyPosition.length; i++) {
+          if (this.bodyPosition[i][0] === x && this.bodyPosition[i][1] === y) {
+            return 1;
+          }
+        }
+        return 0;
+      }, // 下面堆积的块
+      pcKey() {
+        document.onkeydown = (e) => {
+          let key = window.event.keyCode;
+          switch (key) {
+            case 13: // 回车
+              this.start();
+              break;
+            case 37: // left
+              this.change(-1);
+              break;
+            case 39: // right
+              this.change(1);
+              break;
+            case 38: // up
+              this.change(-2);
+              break;
+            case 40: // down
+              this.change(2);
+              break;
+            default:
+              break;
+          }
+        }
+      }, // 监听按键
+      change(t) {
+        if(!this.isStart){
+          return
+        } // 未开始不能按键
+        let f = true;
+        this.tetrisPosition.forEach((item, i) => {
+          if ((item[1] - 1 < 0 && t === -1) || (item[1] + 1 > this.mapWidth - 1 && t === 1)) {
+            f = false;
+          }
+        }); // 左右边界
+        if (f) {
+          this.direction = t;
+        } else {
+          this.direction = 2;
+        }
+        this.autoRun();
+      } // 按键变化
     }
   }
 </script>
@@ -51,6 +248,23 @@
         margin: 10px auto;
         .score {
 
+        }
+      }
+    }
+    .game {
+      width: max-content;
+      height: max-content;
+      margin: 10px auto;
+      background-color: #000;
+      table {
+        margin: 0;
+        border-spacing: 0;
+        td {
+          border-left: 1px solid #bbada0;
+          border-top: 1px solid #bbada0;
+        }
+        .active {
+          background-color: #f65e3b;
         }
       }
     }
