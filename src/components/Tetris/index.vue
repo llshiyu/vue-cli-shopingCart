@@ -1,7 +1,7 @@
 <template>
     <div class="tetris">
         <div class="head">
-            <!--<h1>俄罗斯方块</h1>-->
+            <h1>俄罗斯方块</h1>
             <Button type="primary" @click="start">开始</Button>
             <Button type="primary" @click="stop">暂停</Button>
             <Button type="primary" @click="reset">重置</Button>
