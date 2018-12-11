@@ -76,7 +76,7 @@
           item[1] += (this.mapWidth - 4) / 2;
         });
         this.$forceUpdate();
-        // console.log(this.tetrisPosition, this.shapePosition)
+        console.log(this.tetrisPosition, this.shapePosition)
       }, // 获取上方掉落的方块
       deepCopy(t) {
         return JSON.parse(JSON.stringify(t))
@@ -92,7 +92,7 @@
         }, 600)
       },
       stop() {
-        // console.log('stop')
+        console.log('stop');
         this.isStart = 0;
         clearInterval(this.timer);
       },
@@ -132,17 +132,20 @@
             break;
         }
 
+          if(this.isOver()){
+              alert('over');
+              this.stop();
+              this.timer = null;
+              return
+          }
+
         if(this.isAddBody()){
+            // console.log('addBody');
           this.stop();
           this.getBody();
           this.getTetrisPosition();
           this.start();
           return
-        }
-
-        if(this.isOver()){
-            this.stop();
-            return
         }
 
         this.tetrisPosition.forEach((item, i) => {
@@ -154,7 +157,13 @@
       },
         isOver(){
             for (let i = 0; i < this.bodyPosition.length; i++) {
-
+                let overX = 0,overY = (this.mapWidth - 4) / 2;
+                if((this.bodyPosition[i][0] === overX && this.bodyPosition[i][1] === overY)
+                    ||(this.bodyPosition[i][0] === overX && this.bodyPosition[i][1] === overY+1)
+                    ||(this.bodyPosition[i][0] === overX && this.bodyPosition[i][1] === overY+2)
+                    ||(this.bodyPosition[i][0] === overX && this.bodyPosition[i][1] === overY+3)){
+                    return 1
+                }
             }
             return 0;
         },
@@ -174,7 +183,10 @@
                 let bottomX = this.bodyPosition[i][0] +1;
                 let leftY = this.bodyPosition[i][1]-1;
                 let rightY = this.bodyPosition[i][1]+1;
-                if((topX === x&&this.bodyPosition[i][1] === y)||(bottomX === x&&this.bodyPosition[i][1] === y)||(this.bodyPosition[i][0] === x && leftY === y)||(this.bodyPosition[i][0] === x && rightY === y)){
+                if((topX === x&&this.bodyPosition[i][1] === y)
+                    ||(bottomX === x&&this.bodyPosition[i][1] === y)
+                    ||(this.bodyPosition[i][0] === x && leftY === y)
+                    ||(this.bodyPosition[i][0] === x && rightY === y)){
                     return 1
                 }
             }
