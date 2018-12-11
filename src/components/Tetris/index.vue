@@ -1,7 +1,7 @@
 <template>
   <div class="tetris">
     <div class="head">
-      <h1>俄罗斯方块</h1>
+      <!--<h1>俄罗斯方块</h1>-->
       <Button type="primary" @click="start">开始</Button>
       <Button type="primary" @click="stop">暂停</Button>
       <Button type="primary" @click="init">重置</Button>
@@ -52,6 +52,9 @@
               type: 'info',
               message: `action: ${ action }`
             });
+              this.$router.push({
+                  name: "Home"
+              });
           }
         });
       } else {
@@ -82,14 +85,14 @@
         return parseInt(Math.random() * t);
       }, // 获取随机数 0到t-1的整数
       start() {
-        console.log('start')
+        // console.log('start')
         this.isStart = 1;
         this.timer = setInterval(() => {
           this.autoRun();
         }, 600)
       },
       stop() {
-        console.log('stop')
+        // console.log('stop')
         this.isStart = 0;
         clearInterval(this.timer);
       },
@@ -137,29 +140,53 @@
           return
         }
 
+        if(this.isOver()){
+            this.stop();
+            return
+        }
+
         this.tetrisPosition.forEach((item, i) => {
           item[0] += dx;
           item[1] += dy;
         });
         this.$forceUpdate();
-        console.log('run');
+        // console.log('run');
       },
+        isOver(){
+            for (let i = 0; i < this.bodyPosition.length; i++) {
+
+            }
+            return 0;
+        },
       isAddBody(){
         let t = 0;
-        this.tetrisPosition.forEach((item, i) => {
-          if (item[0] >= this.mapHeight - 1 || this.isBody(item[0],item[1])) {
+          this.tetrisPosition.forEach((item, i) => {
+            // console.log(item[0],item[1],this.isBody(item[0],item[1]))
+          if (item[0] >= this.mapHeight - 1 || this.isBodyAround(item[0],item[1])) {
             t = 1;
           }
         });
         return t
       }, // 是否要往body里增加块
+        isBodyAround(x,y){
+            for (let i = 0; i < this.bodyPosition.length; i++) {
+                let topX = this.bodyPosition[i][0]-1;
+                let bottomX = this.bodyPosition[i][0] +1;
+                let leftY = this.bodyPosition[i][1]-1;
+                let rightY = this.bodyPosition[i][1]+1;
+                if((topX === x&&this.bodyPosition[i][1] === y)||(bottomX === x&&this.bodyPosition[i][1] === y)||(this.bodyPosition[i][0] === x && leftY === y)||(this.bodyPosition[i][0] === x && rightY === y)){
+                    return 1
+                }
+            }
+            return 0;
+        }, // 是否在body四周
       getBody() {
         this.tetrisPosition.forEach((item, i) => {
           this.bodyPosition.push(item)
         });
         this.$forceUpdate();
-        console.log(this.bodyPosition,'body')
-      },
+        // console.log(this.bodyPosition,'body')
+      }, // 获取下方堆积的块
       isTetris(x, y) {
         // this.tetrisPosition.forEach((item, i) => {
         //   if (item[0] === x && item[1] === y) {
