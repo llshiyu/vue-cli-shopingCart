@@ -90,10 +90,23 @@
             deformTetris() {
                 let len = this.shapePosition[this.shapeRandomI].length;
                 this.deformT = this.deformT > len - 1 ? 0 : this.deformT;
-                this.tetrisPosition = this.deepCopy(this.shapePosition[this.shapeRandomI][this.deformT]);
-                this.tetrisPosition.forEach((item, i) => {
-                    item[1] += (this.mapWidth - 4) / 2;
-                });
+                let newTetrisPosition = this.deepCopy(this.shapePosition[this.shapeRandomI][this.deformT]);
+                if(this.tetrisPosition.length) {
+                    for(let i=0;i<newTetrisPosition.length;i++){
+                        newTetrisPosition[i][0] += this.tetrisPosition[0][0];
+                        newTetrisPosition[i][1] += this.tetrisPosition[0][1];
+                    }
+                }else{
+                    newTetrisPosition.forEach((item, i) => {
+                        item[1] += (this.mapWidth - 4) / 2;
+                    });
+                }
+
+                // this.tetrisPosition = this.deepCopy(this.shapePosition[this.shapeRandomI][this.deformT]);
+                // this.tetrisPosition.forEach((item, i) => {
+                //     item[1] += (this.mapWidth - 4) / 2;
+                // });
+                this.tetrisPosition = newTetrisPosition;
                 this.$forceUpdate();
                 // console.log(this.tetrisPosition, this.shapePosition)
             }, // 变形
@@ -105,10 +118,12 @@
             }, // 获取随机数 0到t-1的整数
             start() {
                 // console.log('start')
-                this.isStart = 1;
-                this.timer = setInterval(() => {
-                    this.autoRun();
-                }, 600)
+                if(!this.isStart){
+                    this.isStart = 1;
+                    this.timer = setInterval(() => {
+                        this.autoRun();
+                    }, 600)
+                }
             },
             stop() {
                 // console.log('stop');
