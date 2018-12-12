@@ -72,6 +72,7 @@
                 //     }
                 // });
             } else {
+                this.operatingHandle = false;
                 this.pcKey()
             }
             this.init();
