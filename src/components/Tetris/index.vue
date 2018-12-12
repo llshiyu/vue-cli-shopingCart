@@ -1,6 +1,6 @@
 <template>
     <div class="tetris">
-        <div class="head">
+        <div class="head" v-if="!operatingHandle">
             <h1>俄罗斯方块</h1>
             <Button type="primary" @click="start">开始</Button>
             <Button type="primary" @click="stop">暂停</Button>
@@ -13,6 +13,15 @@
                     <td v-for="(jtem,j) in mapWidth" :key="j" :class="isTetris(i,j)||isBody(i,j)?'active':''"></td>
                 </tr>
             </table>
+        </div>
+        <div class="operating-handle" v-if="operatingHandle">
+            <div class="left btn" @click="change(-1)">&larr;</div>
+            <div class="top btn" @click="deformTetris(++deformT)">&uarr;</div>
+            <div class="right btn" @click="change(1)">&rarr;</div>
+            <div class="bottom btn" @click="change(2)">&darr;</div>
+            <div class="enter btn" @click="start">&crarr;</div>
+            <div class="stop btn" @click="stop">&#x26D4;</div>
+            <div class="reset btn" @click="reset">&#x21BB;</div>
         </div>
     </div>
 </template>
@@ -40,7 +49,8 @@
                 tetrisPosition: [], // 上方掉落的方块
                 bodyPosition: [], // 下方堆积的方块
                 direction: 2, // 方向 -1left 1right -2up(暂时不做) 2down
-                timer: null
+                timer: null,
+                operatingHandle: false, // 操作手柄
             }
         },
         created() {
@@ -48,18 +58,19 @@
             const isIos = /(iPhone|iPad|iPod|iOS)/i.test(u);
             const isAndroid = /(Android)/i.test(u);
             if (isAndroid || isIos) {
-                this.$alert('请用电脑打开', '暂不支持手机端', {
-                    confirmButtonText: '确定',
-                    callback: action => {
-                        this.$message({
-                            type: 'info',
-                            message: `action: ${ action }`
-                        });
-                        this.$router.push({
-                            name: "Home"
-                        });
-                    }
-                });
+                this.operatingHandle = true;
+                // this.$alert('请用电脑打开', '暂不支持手机端', {
+                //     confirmButtonText: '确定',
+                //     callback: action => {
+                //         this.$message({
+                //             type: 'info',
+                //             message: `action: ${ action }`
+                //         });
+                //         this.$router.push({
+                //             name: "Home"
+                //         });
+                //     }
+                // });
             } else {
                 this.pcKey()
             }
@@ -280,7 +291,7 @@
 
 <style lang="less" scoped>
     .tetris {
-        margin-top: -40px;
+        margin-top: -60px;
         .head {
             h1 {
                 font-size: 40px;
@@ -300,7 +311,7 @@
         .game {
             width: max-content;
             height: max-content;
-            margin: 10px auto;
+            margin: 10px auto 20px;
             background-color: #000;
             table {
                 margin: 0;
@@ -312,6 +323,53 @@
                 .active {
                     background-color: #f65e3b;
                 }
+            }
+        }
+        .operating-handle{
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            height: 200px;
+            .btn{
+                width: 50px;
+                height: 50px;
+                line-height: 50px;
+                font-size: 16px;
+                text-align: center;
+                background-color: #e2e5ee;
+                border-radius: 100%;
+                box-shadow: 0 2px 6px 0 rgba(0,0,0,0.12);
+                position: absolute;
+            }
+            .top{
+                left: 60px;
+                bottom: 100px;
+            }
+            .left{
+                left: 10px;
+                bottom: 50px;
+            }
+            .right{
+                left: 110px;
+                bottom: 50px;
+            }
+            .bottom{
+                left: 60px;
+                bottom: 0;
+            }
+            .enter{
+                left: 170px;
+                bottom: 50px;
+                width: 80px;
+                font-size: 20px;
+            }
+            .stop{
+                right: 70px;
+                bottom: 50px;
+            }
+            .reset{
+                right: 10px;
+                bottom: 50px;
             }
         }
     }
