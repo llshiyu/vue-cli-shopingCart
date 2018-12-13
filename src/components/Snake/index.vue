@@ -32,6 +32,7 @@
 
 <script>
     import OperatingHandle from '../OperatingHandle/OperatingHandle';
+    import {isPc} from "../../assets/js/util";
   export default {
     name: "index",
     data() {
@@ -51,26 +52,11 @@
           OperatingHandle
       },
     created() {
-      const u = navigator.userAgent;
-      const isIos = /(iPhone|iPad|iPod|iOS)/i.test(u);
-      const isAndroid = /(Android)/i.test(u);
-      if (isAndroid || isIos) {
-          this.operatingHandle = true;
-        // this.$alert('请用电脑打开', '暂不支持手机端', {
-        //   confirmButtonText: '确定',
-        //   callback: action => {
-        //     this.$message({
-        //       type: 'info',
-        //       message: `action: ${ action }`
-        //     });
-        //         this.$router.push({
-        //             name: "Home"
-        //         });
-        //   }
-        // });
-      } else {
-          this.operatingHandle = false;
+      if(isPc()){
+        this.operatingHandle = false;
         this.pcKey()
+      }else{
+        this.operatingHandle = true;
       }
     },
     mounted() {
@@ -79,6 +65,7 @@
     methods: {
       init() {
         this.stop();
+        this.score = 0;
         this.direction = 1; // 方向 -1left 1right -2up 2down
         this.bodyLen = 4; // 初始身体长度
         this.bodyPosition = []; // 身体坐标
@@ -194,6 +181,12 @@
         }
         return 0
       }
+    },
+    destroyed() {
+      this.timer = null;
+      this.foodPosition = [];
+      this.bodyPosition = [];
+      this.operatingHandle = false;
     }
   }
 </script>

@@ -44,6 +44,7 @@ export function deepCopy (source) {
   for (var key in source) {
     result[key] = typeof source[key] === 'object' ? deepCopy(source[key]) : source[key]
   }
+  // return JSON.parse(JSON.stringify(t))
 
   return result
 }
@@ -382,38 +383,6 @@ export function convSpecialChar (str) {
   return str
 }
 
-/**
- * 埋点
- */
-export function buryData (buryName,data) {
-  let param = {
-    toon_type: "102"  // 北京通
-  }
-  if (/toontype/.test( navigator.userAgent.toLowerCase() )){
-    var str = JSON.stringify(navigator.userAgent.toLowerCase())
-    var matchResult =/toontype(\/)(\d+)/.exec(str)
-    param.toon_type = matchResult[matchResult.length-1]
-  }
-  for(var key in data){
-    if(data.hasOwnProperty(key)===true){
-      param[key]=data[key]
-    }
-  }
-//  这里需要判断是在 App 里还是在普通的浏览器里，例如可以根据 UserAgent 或者 Cookie 来判断
-  if (/toon/.test( navigator.userAgent.toLowerCase() )) {
-    //  获取用户信息
-      sa.getAppStatus((app_info) =>{
-        sa.identify(app_info.distinct_id)
-              // 埋点
-        sa.quick('autoTrack')
-        sa.track(buryName, param)
-    })
-  } else {
-    // 埋点
-    sa.quick('autoTrack')
-    sa.track(buryName, param)
-  }
-}
 
 /**
  * 变更排序
@@ -599,7 +568,7 @@ export function isLogged () {
 
 //  版权信息
 export function getCopyright () {
-  return `Copyright © 1999-${new Date().getFullYear()} 北京市移动公共服务平台   All Rights Reserved 京ICP备12037412号 - 1`
+  return `Copyright © 1999-${new Date().getFullYear()} `
 }
 
 //  更新个人中心数据个数
@@ -794,3 +763,14 @@ function quickSortInPace(arr) {
 }
 // var arr3 = [6, 7, 3, 4, 1, 5, 9, 2, 8];
 // console.log(quickSortInPace(arr3))
+
+export function isPc() {
+  const u = navigator.userAgent;
+  const isIos = /(iPhone|iPad|iPod|iOS)/i.test(u);
+  const isAndroid = /(Android)/i.test(u);
+  if (isAndroid || isIos) {
+    return false
+  } else {
+    return true
+  }
+}

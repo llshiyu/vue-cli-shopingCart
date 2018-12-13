@@ -1,21 +1,24 @@
 <template>
-  <div class="game-box">
-    <div class="head">
-      <h1>2048</h1>
-      <Button type="primary" @click="init">New Game</Button>
-      <p>score: <span :style="{color:(score>0?'#ff0000':'#000')}">{{score}}</span></p>
+    <div class="game-box">
+        <div class="head">
+            <h1>2048</h1>
+            <Button type="primary" @click="init">New Game</Button>
+            <p>score: <span :style="{color:(score>0?'#ff0000':'#000')}">{{score}}</span></p>
+        </div>
+        <div class="game">
+            <ul v-for="(item,i) in numArr" v-if="i>0&&i<=mapSize" :key="i">
+                <li class="grid-cell" v-if="j>0&&j<=mapSize" v-for="(num,j) in item" :key="j"
+                    :style="gridStyle(i,j,num)">
+                    <span class="number" v-if="num>0" :style="numberStyle(num)">{{num}}</span>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div class="game">
-      <ul v-for="(item,i) in numArr" v-if="i>0&&i<=mapSize" :key="i">
-        <li class="grid-cell" v-if="j>0&&j<=mapSize" v-for="(num,j) in item" :key="j" :style="gridStyle(i,j,num)">
-          <span class="number" v-if="num>0" :style="numberStyle(num)">{{num}}</span>
-        </li>
-      </ul>
-    </div>
-  </div>
 </template>
 
 <script>
+  import {isPc} from "../../assets/js/util";
+
   export default {
     name: "index",
     data() {
@@ -28,13 +31,10 @@
       }
     },
     created() {
-      const u = navigator.userAgent;
-      const isIos = /(iPhone|iPad|iPod|iOS)/i.test(u);
-      const isAndroid = /(Android)/i.test(u);
-      if (isAndroid || isIos) {
-        this.mobileKey()
-      } else {
+      if (isPc()) {
         this.pcKey()
+      } else {
+        this.mobileKey()
       }
     },
     computed: {
@@ -47,8 +47,8 @@
           }
         }
       }, // 单元格样式
-      getNumberBackgroundColor(){
-        return (num)=>{
+      getNumberBackgroundColor() {
+        return (num) => {
           switch (num) {
             case 2:
               return '#eee4da';
@@ -121,6 +121,9 @@
     },
     methods: {
       init() {
+        this.score = 0;
+        this.numArr = [];
+        this.needNewPoint = 0;
         let arr = new Array(this.mapSize + 2).fill(0);
         let row = [];
         for (let i = 0; i <= this.mapSize + 1; i++) {
@@ -309,7 +312,7 @@
           x += dx;
           y += dy;
           this.numArr[x][y] += num;
-          this.score+=2;
+          this.score += 2;
         } // 当前点和目标点一样合并
 
         this.$forceUpdate();
@@ -330,53 +333,53 @@
 </script>
 
 <style lang="less" scoped>
-  .game-box {
-    margin-top: -30px;
-    .head {
-      h1 {
-        font-size: 50px;
-        font-weight: bold;
-      }
-      button {
+    .game-box {
+        margin-top: -30px;
+        .head {
+            h1 {
+                font-size: 50px;
+                font-weight: bold;
+            }
+            button {
 
-      }
-      p {
-        font-size: 25px;
-        margin: 20px auto;
-        .score {
+            }
+            p {
+                font-size: 25px;
+                margin: 20px auto;
+                .score {
 
+                }
+            }
         }
-      }
-    }
-    .game {
-      width: 460px;
-      height: 460px;
-      padding: 20px;
-      margin: 30px auto;
-      background-color: #bbada0;
-      border-radius: 10px;
-      position: relative;
-      ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        height: 110px;
-        .grid-cell {
-          width: 90px;
-          height: 90px;
-          border-radius: 6px;
-          background-color: #ccc0b3;
-          position: absolute;
-          .number {
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 50px;
-            line-height: 90px;
-            text-align: center;
-          }
+        .game {
+            width: 460px;
+            height: 460px;
+            padding: 20px;
+            margin: 30px auto;
+            background-color: #bbada0;
+            border-radius: 10px;
+            position: relative;
+            ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+                width: 100%;
+                height: 110px;
+                .grid-cell {
+                    width: 90px;
+                    height: 90px;
+                    border-radius: 6px;
+                    background-color: #ccc0b3;
+                    position: absolute;
+                    .number {
+                        border-radius: 6px;
+                        font-weight: bold;
+                        font-size: 50px;
+                        line-height: 90px;
+                        text-align: center;
+                    }
+                }
+            }
         }
-      }
     }
-  }
 </style>

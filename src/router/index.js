@@ -44,6 +44,12 @@ export default new Router({
       name: 'tetris',
       component: resolve => require(['@/components/Tetris/index'], resolve)
     }, // 俄罗斯方块
+
+    {
+        path: '/airplain',
+        name: 'airplain',
+        component: resolve => require(['@/components/Airplain/index'], resolve)
+    }, // 飞机大战
     {
       path: '/map',
       name: 'map',

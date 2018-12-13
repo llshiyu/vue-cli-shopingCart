@@ -52,6 +52,7 @@
 </template>
 
 <script>
+  import {deepCopy} from "../../assets/js/util";
   export default {
     name: "test",
     data() {
@@ -144,7 +145,7 @@
         } // 打乱列
 
         /************************记录答案************************/
-        _this.answerList = _this.deepCopy(_this.rowList); // 答案记录
+        _this.answerList = deepCopy(_this.rowList); // 答案记录
 
         /************************记录坐标************************/
         let rowText = '', arrText = [];
@@ -171,7 +172,7 @@
         } // 随机掏空
 
         /************************页面渲染************************/
-        this.showRowList = this.deepCopy(this.rowList); // 通过json深拷贝
+        this.showRowList = deepCopy(this.rowList); // 通过json深拷贝
       },
       diffChange(e) {
         this.emptyRowNum = e;
@@ -191,9 +192,6 @@
         randomDo();
         return [randomIndex, randomIndexAfter]
       }, // 随机生成两个不一样的0-9随机数
-      deepCopy(t) {
-        return JSON.parse(JSON.stringify(t))
-      }, // 深拷贝
       showOptions(i, j) {
         this.checkShow = false;
         this.emptyI = null;
@@ -314,7 +312,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.showRowList = this.deepCopy(this.answerList);
+          this.showRowList = deepCopy(this.answerList);
         }).catch(() => {
           this.$message({
             type: 'info',
