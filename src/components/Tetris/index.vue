@@ -66,12 +66,13 @@
     },
     methods: {
       init() {
+        this.resetData();
         this.getTetrisPosition();
       },
       getTetrisPosition() {
         this.tetrisPosition = [];
         this.shapeRandomI = this.getRandom(7) + 1; // 随机模型坐标
-        this.deformTetris(this.deformT);
+        this.deformTetris();
       }, // 获取上方掉落的方块
       deformTetris() {
         let len = this.shapePosition[this.shapeRandomI].length;
@@ -87,11 +88,6 @@
             item[1] += (this.mapWidth - 4) / 2;
           });
         }
-
-        // this.tetrisPosition = deepCopy(this.shapePosition[this.shapeRandomI][this.deformT]);
-        // this.tetrisPosition.forEach((item, i) => {
-        //     item[1] += (this.mapWidth - 4) / 2;
-        // });
         this.tetrisPosition = newTetrisPosition;
         this.$forceUpdate();
         // console.log(this.tetrisPosition, this.shapePosition)
@@ -113,12 +109,23 @@
         this.isStart = 0;
         clearInterval(this.timer);
       },
+      resetData() {
+        this.score = 0;
+        this.mapWidth = 18;
+        this.mapHeight = 25;
+        this.isStart = 0;
+        this.shapeRandomI = 1; // 随机模型坐标
+        this.deformT = 0; // 变形
+        this.tetrisPosition = []; // 上方掉落的方块
+        this.bodyPosition = []; // 下方堆积的方块
+        this.direction = 2; // 方向 -1left 1right -2up(暂时不做) 2down
+        this.timer = null;
+        // this.operatingHandle = false;// 操作手柄
+      }, // 重置data
       reset() {
         this.stop();
-        this.timer = null;
-        this.score = 0;
+        this.resetData();
         this.getTetrisPosition();
-        this.bodyPosition = [];
         // this.start();
       },
       autoRun() {
@@ -158,11 +165,13 @@
           // console.log('addBody');
           this.stop();
           this.getBody();
-          this.deformT = 0;
+            this.eliminateBody();
+            this.deformT = 0;
           this.getTetrisPosition();
           this.start();
           return
         }
+
 
         this.tetrisPosition.forEach((item, i) => {
           item[0] += dx;
@@ -183,6 +192,28 @@
         }
         return 0;
       },
+      isEliminate() {
+        let xArr = [];
+          for (let i = 0; i < this.mapHeight; i++) {
+              let t = 0;
+              for (let j = 0; j < this.bodyPosition.length; j++) {
+                  if(this.bodyPosition[j][0]===i){
+                      t++;
+                  }
+              }
+              console.log(t,999);
+              if(t===this.mapWidth-1){
+                  xArr.push(i)
+              }
+          }
+        return xArr;
+      }, // 可以消除  返回可消除的X坐标  数组形式  数组为空没有可消除的
+      eliminateBody() {
+          let eliminateXArr = this.isEliminate();
+          if(eliminateXArr.length>0){
+              console.log(eliminateXArr)
+          }
+      }, // 消除body
       isAddBody() {
         let t = 0;
         this.tetrisPosition.forEach((item, i) => {
@@ -286,11 +317,7 @@
       } // 按键变化
     },
     destroyed() {
-      this.isStart = 0;
-      this.timer = null;
-      this.tetrisPosition = [];
-      this.bodyPosition = [];
-      this.operatingHandle = false;
+      this.resetData();
     }
   }
 </script>
