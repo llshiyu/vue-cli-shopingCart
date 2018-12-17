@@ -1,3 +1,4 @@
+<!--<Search @callback="searchCallback"></Search>-->
 <template>
     <div class="search-box">
         <div class="search-div" @click="focusInput" v-show="!isFocus">
@@ -6,7 +7,8 @@
         </div>
         <div class="search-input-box" v-show="isFocus">
             <img src="./img/searchIcon.png" class="input-icon">
-            <input type="text" class="search-input" placeholder="请输入" v-focus="isFocus" @blur="isFocus = false">
+            <!-- @blur="isFocus = false"-->
+            <input type="text" class="search-input" placeholder="请输入" v-model="inputVal" v-focus="isFocus" @keyup.enter="submit" @blur="submit">
             <img src="./img/close.png" class="close-icon" @click="unFocus">
             <div class="close-btn" @click="unFocus">取消</div>
         </div>
@@ -18,7 +20,8 @@
         name: "index",
         data(){
             return{
-                isFocus: false
+                isFocus: false,
+                inputVal:''
             }
         },
         directives: {
@@ -36,6 +39,9 @@
             },
             unFocus(){
                 this.isFocus = false;
+            },
+            submit(){
+                this.$emit('callback',this.inputVal)
             }
         }
     }
