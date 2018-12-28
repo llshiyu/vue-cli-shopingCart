@@ -202,6 +202,11 @@
       }
     },
     activated () {
+        // https://lbs.amap.com/api/lightmap/guide/line
+        // 8ab5df1f0299eb133b692c86264fd883
+        // window.location.href = '//m.amap.com/navi/?start=&dest=116.481488,39.990464&destName=阜通西&naviBy=car&key=8ab5df1f0299eb133b692c86264fd883'
+        // https://lbs.amap.com/api/uri-api/guide/travel/route
+        // window.location.href = '//uri.amap.com/navigation?from=&to=116.3246,39.966577,'+'泸州老窖旅游区'+'&mode=car&policy=1&src=mypage&coordinate=gaode&callnative=0'
     },
     mounted () {
       this.map = new AMap.Map('container-map', {
